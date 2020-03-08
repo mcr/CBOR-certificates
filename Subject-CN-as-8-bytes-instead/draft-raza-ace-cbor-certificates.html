@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>CBOR Profile of X.509 Certificates</title>
+<meta content="Shahid Raza" name="author">
+<meta content="Joel Höglund" name="author">
+<meta content="Göran Selander" name="author">
+<meta content="John Preuß Mattsson" name="author">
+<meta content="Martin Furuhed" name="author">
+<meta content="
+       This document specifies a CBOR encoding and profiling of X.509 public key certificate suitable for Internet of Things (IoT) deployments. The full X.509 public key certificate format and commonly used ASN.1 encoding is overly verbose for constrained IoT environments. Profiling together with CBOR encoding reduces the certificate size significantly with associated known performance benefits. 
+       The CBOR certificates are compatible with the existing X.509 standard, enabling the use of profiled and compressed X.509 certificates without modifications in the existing X.509 standard. 
+    " name="description">
+<meta content="xml2rfc 2.40.1" name="generator">
+<meta content="draft-raza-ace-cbor-certificates-latest" name="ietf.draft">
+<link href="draft-raza-ace-cbor-certificates.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">@import url('https://martinthomson.github.io/i-d-template/fonts.css');
+
+html {
+  --background-color: #fff;
+  --text-color: #222;
+  --title-color: #191919;
+  --link-color: #2a6496;
+  --highlight-color: #f9f9f9;
+  --line-color: #eee;
+  --small-font-size: 14.5px;
+}
+body {
+  max-width: 624px;
+  margin: 75px auto;
+  padding: 0 5px;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  font: 16px/22px "Lora", serif;
+  scroll-behavior: smooth;
+}
+
+.ears {
+  display: none;
+}
+
+/* headings */
+#title, h1, h2, h3, h4, h5, h6 {
+  font-family: "Cabin Condensed", sans-serif;
+  font-weight: 600;
+  margin: 0.8em 0 0.3em;
+  font-size-adjust: 0.5;
+  color: var(--title-color);
+}
+#title {
+  padding: 1em 0 0.2em;
+  font-size: 32px;
+  line-height: 40px;
+  clear: both;
+}
+h1, h2, h3 {
+  font-size: 22px;
+  line-height: 26px;
+}
+h4, h5, h6 {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+/* general structure */
+.author {
+  padding-bottom: 0.3em;
+}
+#abstract+p, #abstract+p code, #abstract+p samp, #abstract+p tt {
+  font-size: 18px;
+  line-height: 24px;
+}
+p {
+  padding: 0;
+  margin: 0.5em 0;
+  text-align: left;
+}
+div, span {
+  position: relative;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+.alignCenter.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 1em 2em;
+}
+ol ol, ul ul, ol ul, ul ol {
+  margin-left: 1em;
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+.ulCompact li {
+  margin: 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+}
+ul.empty li, .ulEmpty li {
+  margin-top: 0.5em;
+}
+ul.compact, .ulCompact,
+ol.compact, .olCompact {
+  line-height: 100%;
+  margin: 0 0 0 2em;
+}
+
+/* definition lists */
+dl {
+}
+dl > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl > dd {
+  margin-bottom: .8em;
+  min-height: 1.3em;
+}
+dl.compact > dd, .dlCompact > dd {
+  margin-bottom: 0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+
+/* links */
+a, a[href].selfRef:hover {
+  text-decoration: none;
+}
+a[href].selfRef {
+  color: var(--text-color);
+}
+a[href] {
+  color: var(--link-color);
+}
+a[href]:hover {
+  text-decoration: underline;
+}
+a[href].selfRef:hover {
+  background-color: var(--highlight-color);
+}
+a.xref {
+  white-space: nowrap;
+}
+
+/* Figures */
+tt, code, pre {
+  background-color: var(--highlight-color);
+  font: 14px/22px 'Oxygen Mono', monospace;
+}
+pre {
+  border: 1px solid var(--line-color);
+  line-height: 17px;
+  margin: 5px;
+  padding: 5px;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0.5em 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption, caption {
+  font-style: italic;
+  margin: 0.5em 1.5em;
+  text-align: left;
+}
+@media screen {
+  pre {
+    display: inline-block;
+    overflow-x: auto;
+    max-width: 100%;
+    width: calc(100% - 22px - 1em);
+  }
+  figure pre {
+    display: block;
+    width: calc(100% - 25px);
+  }
+  pre + .pilcrow {
+    display: inline-block;
+    vertical-align: text-bottom;
+    padding-bottom: 8px;
+  }
+  table {
+    display: inline-block;
+    overflow-x: auto;
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 0 2em;
+  font-style: italic;
+}
+blockquote {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+  border: 1px solid var(--line-color);
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5em 0.75em;
+}
+th {
+  text-align: left;
+  background-color: #eee;
+}
+tr:nth-child(2n) > td {
+  background-color: var(--background-color);
+}
+tr:nth-child(2n+1) > td {
+  background-color: var(--highlight-color);
+}
+thead+tbody tr:nth-child(2n) > td {
+  background-color: var(--highlight-color);
+}
+thead+tbody tr:nth-child(2n+1) > td {
+  background-color: var(--background-color);
+}
+table caption {
+  font-style: italic;
+  margin: 0.3em 0;
+  padding: 0;
+  text-align: left;
+}
+table p {
+  /* XXX to avoid bottom margin on table row signifiers. If paragraphs should
+     be allowed within tables more generally, it would be far better to select on a class. */
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  margin-left: 3px;
+  visibility: hidden;
+  user-select: none;
+}
+a.pilcrow[href] { color: #ddd; }
+a.pilcrow[href]:hover { text-decoration: none; }
+@media screen {
+  :hover > a.pilcrow {
+    visibility: visible;
+  }
+  a.pilcrow:hover {
+    background-color: transparent;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid var(--line-color);
+}
+.bcp14 {
+  font-variant: small-caps;
+}
+
+.role {
+  font-variant: all-small-caps;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: var(--small-font-size);
+  line-height: 18px;
+  --identifier-width: 8em;
+}
+#identifiers dt {
+  width: var(--identifier-width);
+  margin: 0;
+  clear: left;
+  float: left;
+  text-align: right;
+}
+#identifiers dd {
+  margin: 0 0 0 calc(1em + var(--identifier-width));
+  min-width: 5em;
+}
+#identifiers .authors .author {
+  display: inline-block;
+  margin-right: 1.5em;
+}
+#identifiers .authors .org {
+  font-style: italic;
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: left;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+}
+#toc nav ul {
+  margin: 0 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+#toc nav li {
+  line-height: 1.3em;
+  margin: 0.75em 0;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+#toc a.xref {
+  white-space: normal;
+}
+/* references */
+.references dt {
+  text-align: right;
+  font-weight: bold;
+  min-width: 7em;
+}
+.references dd {
+  margin-left: 8em;
+  overflow: auto;
+}
+
+.refInstance {
+  margin-bottom: 1.25em;
+}
+
+.references .ascii {
+  margin-bottom: 0.25em;
+}
+
+/* index */
+.index ul {
+  margin: 0 0 0 1em;
+  padding: 0;
+  list-style: none;
+}
+.index ul ul {
+  margin: 0;
+}
+.index li {
+  margin: 0;
+  text-indent: -2em;
+  padding-left: 2em;
+  padding-bottom: 5px;
+}
+.indexIndex {
+  margin: 0.5em 0 1em;
+}
+.index a {
+  font-weight: 700;
+}
+/* make the index two-column on all but the smallest screens */
+@media (min-width: 600px) {
+  .index ul {
+    column-count: 2;
+    column-gap: 20px;
+  }
+  .index ul ul {
+    column-count: 1;
+    column-gap: 0;
+  }
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  margin: 1em 0;
+}
+address.vcard .nameRole {
+  font-weight: 700;
+  margin-left: 0;
+}
+address.vcard .label {
+  margin: 0.5em 0;
+}
+address.vcard .type {
+  display: none;
+}
+.alternative-contact {
+  margin: 1.5em 0 1em;
+}
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+@media (min-width: 600px) {
+  #authors-addresses > section {
+    display: relative;
+    padding: 32px 0 0;
+    column-count: 2;
+    column-gap: 20px;
+  }
+  #name-authors-address {
+    position: absolute;
+    top: 0px;
+    column-span: all;
+  }
+  /* hack for break-inside: avoid-column */
+  #authors-addresses address {
+    display: inline-block;
+    break-inside: avoid-column;
+  }
+}
+
+/* temporary notes */
+.rfcEditorRemove::before {
+  position: absolute;
+  top: 0.2em;
+  right: 0.2em;
+  padding: 0.2em;
+  content: "The RFC Editor will remove this note";
+  color: #b76427;
+  background-color: rgba(249, 232, 105, 0.3);
+}
+.rfcEditorRemove {
+  position: relative;
+  padding-top: 1.8em;
+  background-color: rgba(249, 232, 105, 0.3);
+  border-radius: 3px;
+}
+.cref {
+  background-color: rgba(249, 232, 105, 0.3);
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+/* alternative layout for smaller screens */
+@media screen and (max-width: 953px) {
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    opacity: 0.6;
+  }
+  #toc.active {
+      opacity: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 2px 0 2px 6px;
+    padding-right: 1em;
+    font-size: 18px;
+    line-height: 24px;
+    min-width: 190px;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+  }
+  #toc h2::before { /* css hamburger */
+    float: right;
+    position: relative;
+    width: 1em;
+    height: 1px;
+    left: -164px;
+    margin: 8px 0 0 0;
+    background: white none repeat scroll 0 0;
+    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+    content: "";
+  }
+  #toc nav {
+    display: none;
+    background-color: var(--background-color);
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+  #toc.active nav {
+    display: block;
+  }
+  /* Make the collapsed ToC header render white on gray also when it's a link */
+  #toc h2 a,
+  #toc h2 a:link,
+  #toc h2 a:focus,
+  #toc h2 a:hover,
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+  #toc a.toplink {
+    margin-top: 2px;
+  }
+}
+
+/* alternative layout for wide screens */
+@media screen and (min-width: 954px) {
+  body {
+    padding-right: 380px;
+  }
+  #toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 480px);
+    width: 312px;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 2em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  #toc nav > ul  {
+    margin-bottom: 2em;
+  }
+  #toc ul {
+    margin: 0 0 0 4px;
+    font-size: var(--small-font-size);
+  }
+  #toc ul p, #toc ul li {
+    margin: 2px 0;
+    line-height: 22px;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre {
+    page-break-inside: avoid;
+  }
+  figure {
+    overflow: scroll;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  h2+*, h3+*, h4+*, h5+*, h6+* {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+}
+
+/* Changes introduced to fix issues found during implementation */
+
+/* Separate body from document info even without intervening H1 */
+section {
+  clear: both;
+}
+
+/* Top align author divs, to avoid names without organization dropping level with org names */
+.author {
+  vertical-align: top;
+}
+
+/* Style section numbers with more space between number and title */
+.section-number {
+  padding-right: 0.5em;
+}
+
+/* Add styling for a link in the ToC that points to the top of the document */
+a.toplink {
+  float: right;
+  margin: 8px 0.5em 0;
+}
+
+/* Fix the dl styling to match the RFC 7992 attributes */
+dl > dt,
+dl.dlParallel > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl.dlNewline > dt {
+  float: none;
+}
+
+/* Provide styling for table cell text alignment */
+table td.text-left,
+table th.text-left {
+  text-align: left;
+}
+table td.text-center,
+table th.text-center {
+  text-align: center;
+}
+table td.text-right,
+table th.text-right {
+  text-align: right;
+}
+
+/* Make the alternative author contact information look less like just another
+   author, and group it closer with the primary author contact information */
+.alternative-contact {
+  margin: 0.5em 0 0.25em 0;
+}
+address .non-ascii {
+  margin: 0 0 0 2em;
+}
+
+/* With it being possible to set tables with alignment
+  left, center, and right, { width: 100%; } does not make sense */
+table {
+  width: auto;
+}
+
+/* Avoid reference text that sits in a block with very wide left margin,
+   because of a long floating dt label.*/
+.references dd {
+  overflow: visible;
+}
+
+/* Control caption placement */
+caption {
+  caption-side: bottom;
+}
+
+/* Limit the width of the author address vcard, so names in right-to-left
+   script don't end up on the other side of the page. */
+
+address.vcard {
+  max-width: 20em;
+  margin-right: auto;
+}
+
+/* For address alignment dependent on LTR or RTL scripts */
+address div.left {
+  text-align: left;
+}
+address div.right {
+  text-align: right;
+}
+
+/* Provide table alignment support.  We can't use the alignX classes above
+   since they do unwanted things with caption and other styling. */
+table.right {
+ margin-left: auto;
+ margin-right: 0;
+}
+table.center {
+ margin-left: auto;
+ margin-right: auto;
+}
+table.left {
+ margin-left: 0;
+ margin-right: auto;
+}
+
+/* Give the table caption label the same styling as the figcaption */
+
+@media print {
+  .toplink {
+    display: none;
+  }
+
+  /* avoid overwriting the top border line with the ToC header */
+  #toc {
+    padding-top: 1px;
+  }
+
+  /* Avoid page breaks inside dl and author address entries */
+  dd {
+    page-break-before: avoid;
+  }
+  .vcard {
+    page-break-inside: avoid;
+  }
+
+}
+/* Tweak the bcp14 keyword presentation */
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+</style>
+<link href="rfc-local.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">CBOR Profile of X.509 Certificates</td>
+<td class="right">March 2020</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Raza, et al.</td>
+<td class="center">Expires 7 September 2020</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">ACE Working Group</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-raza-ace-cbor-certificates-latest</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2020-03-06" class="published">6 March 2020</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Standards Track</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2020-09-07">7 September 2020</time></dd>
+<dt class="label-authors">Authors:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">S. Raza</div>
+<div class="org">RISE AB</div>
+</div>
+<div class="author">
+      <div class="author-name">J. Höglund</div>
+<div class="org">RISE AB</div>
+</div>
+<div class="author">
+      <div class="author-name">G. Selander</div>
+<div class="org">Ericsson AB</div>
+</div>
+<div class="author">
+      <div class="author-name">J. Mattsson</div>
+<div class="org">Ericsson AB</div>
+</div>
+<div class="author">
+      <div class="author-name">M. Furuhed</div>
+<div class="org">Nexus Group</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">CBOR Profile of X.509 Certificates</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">This document specifies a CBOR encoding and profiling of X.509 public key certificate suitable for Internet of Things (IoT) deployments. The full X.509 public key certificate format and commonly used ASN.1 encoding is overly verbose for constrained IoT environments. Profiling together with CBOR encoding reduces the certificate size significantly with associated known performance benefits.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">The CBOR certificates are compatible with the existing X.509 standard, enabling the use of profiled and compressed X.509 certificates without modifications in the existing X.509 standard.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 7 September 2020.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2020 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document. Code Components extracted from this
+            document must include Simplified BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Simplified BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction" class="xref">Introduction</a><a href="#section-toc.1-1.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-terminology" class="xref">Terminology</a><a href="#section-toc.1-1.2.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-cbor-encoding" class="xref">CBOR Encoding</a><a href="#section-toc.1-1.3.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-deployment-settings" class="xref">Deployment settings</a><a href="#section-toc.1-1.4.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-expected-certificate-sizes" class="xref">Expected Certificate Sizes</a><a href="#section-toc.1-1.5.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-native-cbor-certificates" class="xref">Native CBOR Certificates</a><a href="#section-toc.1-1.6.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a><a href="#section-toc.1-1.7.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="xref">8</a>.  <a href="#name-privacy-considerations" class="xref">Privacy Considerations</a><a href="#section-toc.1-1.8.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="xref">9</a>.  <a href="#name-iana-considerations" class="xref">IANA Considerations</a><a href="#section-toc.1-1.9.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.9.2.1">
+                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="xref">9.1</a>.  <a href="#name-cbor-certificate-types-regi" class="xref">CBOR Certificate Types Registry</a><a href="#section-toc.1-1.9.2.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.9.2.2">
+                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="xref">9.2</a>.  <a href="#name-cbor-certificate-signature-" class="xref">CBOR Certificate Signature Algorithms Registry</a><a href="#section-toc.1-1.9.2.2.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.9.2.3">
+                <p id="section-toc.1-1.9.2.3.1"><a href="#section-9.3" class="xref">9.3</a>.  <a href="#name-cbor-certificate-public-key" class="xref">CBOR Certificate Public Key Algorithms Registry</a><a href="#section-toc.1-1.9.2.3.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="xref">10</a>. <a href="#name-references" class="xref">References</a><a href="#section-toc.1-1.10.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.10.2.1">
+                <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="xref">10.1</a>.  <a href="#name-normative-references" class="xref">Normative References</a><a href="#section-toc.1-1.10.2.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.10.2.2">
+                <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="xref">10.2</a>.  <a href="#name-informative-references" class="xref">Informative References</a><a href="#section-toc.1-1.10.2.2.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-appendix.a" class="xref">Appendix A</a>.  <a href="#name-example-cbor-certificates" class="xref">Example CBOR Certificates</a><a href="#section-toc.1-1.11.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.11.2.1">
+                <p id="section-toc.1-1.11.2.1.1"><a href="#section-a.1" class="xref">A.1</a>.  <a href="#name-example-x509-certificate" class="xref">Example X.509 Certificate</a><a href="#section-toc.1-1.11.2.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.11.2.2">
+                <p id="section-toc.1-1.11.2.2.1"><a href="#section-a.2" class="xref">A.2</a>.  <a href="#name-example-cbor-certificate-co" class="xref">Example CBOR Certificate Compression</a><a href="#section-toc.1-1.11.2.2.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.11.2.3">
+                <p id="section-toc.1-1.11.2.3.1"><a href="#section-a.3" class="xref">A.3</a>.  <a href="#name-example-native-cbor-certifi" class="xref">Example Native CBOR Certificate</a><a href="#section-toc.1-1.11.2.3.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#section-appendix.b" class="xref">Appendix B</a>.  <a href="#name-x509-certificate-profile-as" class="xref">X.509 Certificate Profile, ASN.1</a><a href="#section-toc.1-1.12.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#section-appendix.c" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a><a href="#section-toc.1-1.13.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</nav>
+</section>
+</div>
+<div id="intro">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">One of the challenges with deploying a Public Key Infrastructure (PKI) for the Internet of Things (IoT) is the size and encoding of X.509 public key certificates <span>[<a href="#RFC5280" class="xref">RFC5280</a>]</span>, since those are not optimized for constrained environments <span>[<a href="#RFC7228" class="xref">RFC7228</a>]</span>. More compact certificate representations are desirable. Due to the current PKI usage of X.509 certificates, keeping X.509 compatibility is necessary at least for a transition period. However, the use of a more compact encoding with the Concise Binary Object Representation (CBOR) <span>[<a href="#RFC7049" class="xref">RFC7049</a>]</span> reduces the certificate size significantly which has known performance benefits in terms of decreased communication overhead, power consumption, latency, storage, etc.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">CBOR is a data format designed for small code size and small message size. CBOR builds on the JSON data model but extends it by e.g. encoding binary data directly without base64 conversion. In addition to the binary CBOR encoding, CBOR also has a diagnostic notation that is readable and editable by humans. The Concise Data Definition Language (CDDL) <span>[<a href="#RFC8610" class="xref">RFC8610</a>]</span> provides a way to express structures for protocol messages and APIs that use CBOR. <span>[<a href="#RFC8610" class="xref">RFC8610</a>]</span> also extends the diagnostic notation.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">CBOR data items are encoded to or decoded from byte strings using a type-length-value encoding scheme, where the three highest order bits of the initial byte contain information about the major type. CBOR supports several different types of data items, in addition to integers (int, uint), simple values (e.g. null), byte strings (bstr), and text strings (tstr), CBOR also supports arrays [] of data items, maps {} of pairs of data items, and sequences of data items. For a complete specification and examples, see <span>[<a href="#RFC7049" class="xref">RFC7049</a>]</span>, <span>[<a href="#RFC8610" class="xref">RFC8610</a>]</span>, and  <span>[<a href="#I-D.ietf-cbor-sequence" class="xref">I-D.ietf-cbor-sequence</a>]</span>.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">This document specifies the CBOR certificate profile, which is a CBOR based encoding and compression of the X.509 certificate format. The profile is based on previous work on profiling of X.509 certificates for Internet of Things deployments <span>[<a href="#RFC7925" class="xref">RFC7925</a>]</span> <span>[<a href="#X.509-IoT" class="xref">X.509-IoT</a>]</span> which retains backwards compatibility with X.509, and can be applied for lightweight certificate based authentication with e.g. TLS <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>, DTLS <span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>, or EDHOC <span>[<a href="#I-D.selander-ace-cose-ecdhe" class="xref">I-D.selander-ace-cose-ecdhe</a>]</span>. The same profile can be used for "native" CBOR encoded certificates, which further optimizes the performance in constrained environments but are not backwards compatible with X.509, see <a href="#native-CBOR" class="xref">Section 6</a>.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">Other work has looked at reducing size of X.509 certificates. The purpose of this document is to stimulate a discussion on CBOR based certificates.<a href="#section-1-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="terminology">
+<section id="section-2">
+      <h2 id="name-terminology">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
+      </h2>
+<p id="section-2-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 <span>[<a href="#RFC2119" class="xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="xref">RFC8174</a>]</span> when, and only when, they appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-2">This specification makes use of the terminology in <span>[<a href="#RFC7228" class="xref">RFC7228</a>]</span>.<a href="#section-2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="encoding">
+<section id="section-3">
+      <h2 id="name-cbor-encoding">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-cbor-encoding" class="section-name selfRef">CBOR Encoding</a>
+      </h2>
+<p id="section-3-1">This section specifies the content and encoding for CBOR certificates. The CBOR certificate can be a native CBOR certificate, in which case the signature is calculated on the CBOR encoded data, or a CBOR compressed X.509 certificates in which case the signature is calculated on the DER encoded ASN.1 data in the X.509 certificate. In both cases the certificate content is adhering to the restrictions given by <span>[<a href="#RFC7925" class="xref">RFC7925</a>]</span>. The corresponding ASN.1 schema is given in <a href="#appA" class="xref">Appendix A</a>.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">The encoding and compression has several components including: ASN.1 DER and base64 encoding are replaced with CBOR encoding, static fields are elided, and elliptic curve points are compressed. The X.509 fields and there CBOR encodings are listed below. Combining these different components reduces the certificate size significantly, something that is not possible with general purpose compressions algorithms, see <a href="#fig-table" class="xref">Figure 1</a>.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<p id="section-3-3">CBOR certificates are defined in terms of RFC 7925 profiled X.509 certificates:<a href="#section-3-3" class="pilcrow">¶</a></p>
+<ul>
+<li id="section-3-4.1">version. The 'version' field is known (fixed to v3), and is omitted in the CBOR encoding.<a href="#section-3-4.1" class="pilcrow">¶</a>
+</li>
+<li id="section-3-4.2">serialNumber. The 'serialNumber' field is encoded as a CBOR byte string.<a href="#section-3-4.2" class="pilcrow">¶</a>
+</li>
+<li id="section-3-4.3">signature. The 'signature' field is always the same as the 'signatureAlgorithm' field and always omitted from the CBOR encoding.<a href="#section-3-4.3" class="pilcrow">¶</a>
+</li>
+<li id="section-3-4.4">issuer. In the general case, the Distinguished Name is encoded as CBOR map, but if only CN is present the value can be encoded as a single text value.<a href="#section-3-4.4" class="pilcrow">¶</a>
+</li>
+<li id="section-3-4.5">validity. The 'notBefore' and 'notAfter' UTCTime fields are encoded as as UnixTime in unsigned integer format.<a href="#section-3-4.5" class="pilcrow">¶</a>
+</li>
+<li id="section-3-4.6">subject. The 'subject' field is restricted to specifying the value of the common name. By RFC 7925 an IoT subject is identified by either an EUI-64 for clients, or by a FQDN for servers. An EUI-64 mapped from an EUI-48 MAC address is encoded as a CBOR byte string of length 6. Other EUI-64 is ncoded as a CBOR byte string of length 8. A FQDN is encoded as a CBOR text string.<a href="#section-3-4.6" class="pilcrow">¶</a>
+</li>
+<li id="section-3-4.7">subjectPublicKeyInfo. If the 'algorithm' field is the default (id-ecPublicKey and prime256v1), it is omitted in the CBOR encoding., otherwise it is included in the subjectPublicKeyInfo_algorithm field encoded as a int, (see <a href="#iana" class="xref">Section 9</a>). The 'subjectPublicKey' is encoded as as a point compressed public key as defined in Section 2.3.3 of <span>[<a href="#SECG" class="xref">SECG</a>]</span>.<a href="#section-3-4.7" class="pilcrow">¶</a>
+</li>
+<li id="section-3-4.8">extensions. The 'extensions' field is encoded as a CBOR map from int to bytes. The 'extnID' and the 'critical' fields are encoded as and CBOR integer. The OIDs for the four extensions mandated to be supported by RFC 7925 always start with 2.5.29. The trailing integer is encoded as the magnitude of the CBOR int. The extensions (non-critical) mandated by RFC 7925 are therefore encoded as magnitude 15, 17, 19, and 37. The 'critical' field is encoded as the sign of the CBOR int, with critical extensions having a negative sign. The 'extnValue' field is encoded as a CBOR byte string.<a href="#section-3-4.8" class="pilcrow">¶</a>
+</li>
+<li id="section-3-4.9">signatureAlgorithm. If the 'signatureAlgorithm' field is the default (ecdsa-with-SHA256) it is omitted in the CBOR encoding, otherwise it is included in the signatureAlgorithm field encoded as an CBOR int (see <a href="#iana" class="xref">Section 9</a>).<a href="#section-3-4.9" class="pilcrow">¶</a>
+</li>
+<li id="section-3-4.10">signatureValue. Since the signature algorithm and resulting signature length are known, padding and extra length fields which are present in the ASN.1 encoding are omitted and the 'signatureValue' field is encoded as a CBOR byte string.<a href="#section-3-4.10" class="pilcrow">¶</a>
+</li>
+</ul>
+<p id="section-3-5">In addition to the above fields present in X.509, the CBOR ecoding introduces an additional field<a href="#section-3-5" class="pilcrow">¶</a></p>
+<ul>
+<li id="section-3-6.1">type. A CBOR int used to indicate the type of CBOR certificate. Currently type can be a native CBOR certificate (type = 0) or a CBOR compressed X.509 certificates (type = 1), see <a href="#iana" class="xref">Section 9</a>.<a href="#section-3-6.1" class="pilcrow">¶</a>
+</li>
+</ul>
+<p id="section-3-7">The Concise Data Definition Language (CDDL) for a CBOR certificate is:<a href="#section-3-7" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft art-CDDL" id="section-3-8">
+<pre>
+certificate = (
+   type : int,
+   serialNumber : bytes,
+   issuer : { + int =&gt; bytes } / text,
+   validity_notBefore: uint,
+   validity_notAfter: uint,
+   subject : text / bytes
+   subjectPublicKey : bytes
+   extensions : { * int =&gt; bytes },
+   signatureValue : bytes,
+   ? ( signatureAlgorithm : int, subjectPublicKeyInfo_algorithm : int )
+)
+</pre><a href="#section-3-8" class="pilcrow">¶</a>
+</div>
+<p id="section-3-9">TODO - Specify the exact content to sign when type = 0. This is not defined.<a href="#section-3-9" class="pilcrow">¶</a></p>
+<p id="section-3-10">TODO - Specify exactly how issuer is encoded into a map / text and back again.<a href="#section-3-10" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="dep-set">
+<section id="section-4">
+      <h2 id="name-deployment-settings">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-deployment-settings" class="section-name selfRef">Deployment settings</a>
+      </h2>
+<p id="section-4-1">CBOR certificates can be deployed with legacy X.509 certificates and CA infrastructure. In order to verify the signature, the CBOR certificate is used to recreate the original X.509 data structure to be able to verify the signature.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-2">For the currently used DTLS v1.2 protocol, where the handshake is sent unencrypted, the actual encoding and compression can be done at different locations depending on the deployment setting. For example, the mapping between CBOR certificate and standard X.509 certificate can take place in a 6LoWPAN border gateway which allows the server side to stay unmodified. This case gives the advantage of the low overhead of a CBOR certificate over a constrained wireless links. The conversion to X.509 within an IoT device will incur a computational overhead, however, this is negligible compared to the reduced communication overhead.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-3">For the setting with constrained server and server-only authentication, the server only needs to be provisioned with the CBOR certificate and does not perform the conversion to X.509. This option is viable when client authentication can be asserted by other means.<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-4">For DTLS v1.3, because certificates are encrypted, the proposed encoding needs to be done fully end-to-end, through adding the encoding/decoding functionality to the server. This corresponds to the proposed native mode, a new certificate compression scheme. The required changes on the server side are in line with recent protocols utilizing cbor encoding for communication with resource constrained devices <span>[<a href="#RFC8613" class="xref">RFC8613</a>]</span>.<a href="#section-4-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="expected-certificate-sizes">
+<section id="section-5">
+      <h2 id="name-expected-certificate-sizes">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-expected-certificate-sizes" class="section-name selfRef">Expected Certificate Sizes</a>
+      </h2>
+<p id="section-5-1">The profiling size saving mainly comes from enforcing removal of issuer and subject info fields besides the common name. The encoding savings are presented above in <a href="#encoding" class="xref">Section 3</a>, for a sample certificate given in <a href="#appA" class="xref">Appendix A</a> resulting in the numbers shown in <a href="#fig-table" class="xref">Figure 1</a>.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">After profiling, all duplicated information has been removed, and remaining text strings are minimal in size. Therefore the further size reduction reached with general compression mechanisms will be small, mainly corresponding to making the ASN.1 endcoding more compact.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<span id="name-comparing-sizes-of-certific"></span><div id="fig-table">
+<figure id="figure-1">
+        <div class="artwork art-text alignCenter" id="section-5-3.1">
+<pre>
++-----------------------------------------------------------------+
+|                   | X.509 Profiled | CBOR Encoded |    Zlib     |
++-----------------------------------------------------------------+
+| Certificate Size  |      314       |     144      |     295     |
++-----------------------------------------------------------------+
+
+</pre>
+</div>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-comparing-sizes-of-certific" class="selfRef">Comparing Sizes of Certificates (bytes)</a>
+        </figcaption></figure>
+</div>
+</section>
+</div>
+<div id="native-CBOR">
+<section id="section-6">
+      <h2 id="name-native-cbor-certificates">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-native-cbor-certificates" class="section-name selfRef">Native CBOR Certificates</a>
+      </h2>
+<p id="section-6-1">Further performance improvements can be achieved with the use of native CBOR certificates. In this case the signature is calculated over the CBOR encoded structure rather than the ASN.1 encoded structure. This removes entirely the need for ASN.1 and reduces the processing in the authenticating devices.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">This solution applies when the devices are only required to authenticate with a set of native CBOR certificate compatible servers, which may become a preferred approach for future deployments. The mapping between X.509 and CBOR certificates enables a migration path between the backwards compatible format and the fully optimized format. This motivates introducing a type flag to indicate if the certificate should be restored to X.509 or kept cbor encoded.<a href="#section-6-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-cons">
+<section id="section-7">
+      <h2 id="name-security-considerations">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-7-1">The CBOR profiling of X.509 certificates does not change the security assumptions needed when deploying standard X.509 certificates but decreases the number of fields transmitted, which reduces the risk for implementation errors.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2">Conversion between the certificate formats can be made in constant time to reduce risk of information leakage through side channels.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-3">The current version of the format hardcodes the signature algorithm which does not allow for crypto agility. A COSE crypto algorithm can be specified with small overhead, and this changed is proposed for a future version of the draft.<a href="#section-7-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="privacy-considerations">
+<section id="section-8">
+      <h2 id="name-privacy-considerations">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-privacy-considerations" class="section-name selfRef">Privacy Considerations</a>
+      </h2>
+<p id="section-8-1">The mechanism in this draft does not reveal any additional information compared to X.509.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">Because of difference in size, it will be possible to detect that this profile is used.<a href="#section-8-2" class="pilcrow">¶</a></p>
+<p id="section-8-3">The gateway solution described in <a href="#dep-set" class="xref">Section 4</a> requires unencrypted certificates.<a href="#section-8-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana">
+<section id="section-9">
+      <h2 id="name-iana-considerations">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<div id="cbor-certificate-types-registry">
+<section id="section-9.1">
+        <h3 id="name-cbor-certificate-types-regi">
+<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-cbor-certificate-types-regi" class="section-name selfRef">CBOR Certificate Types Registry</a>
+        </h3>
+<p id="section-9.1-1">IANA has created a new registry titled "CBOR Certificate Types" under the new heading "CBOR Certificate". The registration procedure is "Expert Review". The columns of the registry are Value, Description, and Reference, where Value is an integer and the other columns are text strings. The initial contents of the registry are:<a href="#section-9.1-1" class="pilcrow">¶</a></p>
+<span id="name-cbor-certificate-types"></span><div id="fig-types">
+<figure id="figure-2">
+          <div class="artwork art-text alignCenter" id="section-9.1-2.1">
+<pre>
++-------+---------------------------------------+-------------------+
+| Value | Description                           | Reference         |
++-------+---------------------------------------+-------------------+
+|     0 | Native CBOR Certificate.              | [[this document]] |
+|     1 | CBOR Compressed X.509 Certificate     | [[this document]] |
++-------+---------------------------------------+-------------------+
+</pre>
+</div>
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<a href="#name-cbor-certificate-types" class="selfRef">CBOR Certificate Types</a>
+          </figcaption></figure>
+</div>
+</section>
+</div>
+<div id="cbor-certificate-signature-algorithms-registry">
+<section id="section-9.2">
+        <h3 id="name-cbor-certificate-signature-">
+<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-cbor-certificate-signature-" class="section-name selfRef">CBOR Certificate Signature Algorithms Registry</a>
+        </h3>
+<p id="section-9.2-1">IANA has created a new registry titled "CBOR Certificate Signature Algorithms" under the new heading "CBOR Certificate". The registration procedure is "Expert Review". The columns of the registry are Value, X.509 Algorithm, and Reference, where Value is an integer and the other columns are text strings. The initial contents of the registry are:<a href="#section-9.2-1" class="pilcrow">¶</a></p>
+<span id="name-cbor-certificate-signature-a"></span><div id="fig-sigalgs">
+<figure id="figure-3">
+          <div class="artwork art-text alignCenter" id="section-9.2-2.1">
+<pre>
++-------+---------------------------------------+-------------------+
+| Value | X.509 Signature Algorithm             | Reference         |
++-------+---------------------------------------+-------------------+
+|     0 | ecdsa-with-SHA384                     | [[this document]] |
+|     1 | ecdsa-with-SHA512                     | [[this document]] |
+|     2 | id-ecdsa-with-shake128                | [[this document]] |
+|     3 | id-ecdsa-with-shake256                | [[this document]] |
+|     4 | id-Ed25519                            | [[this document]] |
+|     5 | id-Ed448                              | [[this document]] |
++-------+---------------------------------------+-------------------+
+</pre>
+</div>
+<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
+<a href="#name-cbor-certificate-signature-a" class="selfRef">CBOR Certificate Signature Algorithms</a>
+          </figcaption></figure>
+</div>
+</section>
+</div>
+<div id="cbor-certificate-public-key-algorithms-registry">
+<section id="section-9.3">
+        <h3 id="name-cbor-certificate-public-key">
+<a href="#section-9.3" class="section-number selfRef">9.3. </a><a href="#name-cbor-certificate-public-key" class="section-name selfRef">CBOR Certificate Public Key Algorithms Registry</a>
+        </h3>
+<p id="section-9.3-1">IANA has created a new registry titled "CBOR Certificate Public Key Algorithms" under the new heading "CBOR Certificate". The registration procedure is "Expert Review". The columns of the registry are Value, X.509 Algorithm, and Reference, where Value is an integer and the other columns are text strings. The initial contents of the registry are:<a href="#section-9.3-1" class="pilcrow">¶</a></p>
+<span id="name-cbor-certificate-public-key-"></span><div id="fig-pkalgs">
+<figure id="figure-4">
+          <div class="artwork art-text alignCenter" id="section-9.3-2.1">
+<pre>
++-------+---------------------------------------+-------------------+
+| Value | X.509 Public Key Algorithm            | Reference         |
++-------+---------------------------------------+-------------------+
+|     0 | id-ecPublicKey + prime384v1           | [[this document]] |
+|     1 | id-ecPublicKey + prime512v1           | [[this document]] |
+|     2 | id-X25519                             | [[this document]] |
+|     3 | id-X448                               | [[this document]] |
+|     4 | id-Ed25519                            | [[this document]] |
+|     5 | id-Ed448                              | [[this document]] |
++-------+---------------------------------------+-------------------+
+</pre>
+</div>
+<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
+<a href="#name-cbor-certificate-public-key-" class="selfRef">CBOR Certificate Public Key Algorithms</a>
+          </figcaption></figure>
+</div>
+</section>
+</div>
+</section>
+</div>
+<section id="section-10">
+      <h2 id="name-references">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<section id="section-10.1">
+        <h3 id="name-normative-references">
+<a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.ietf-cbor-sequence">[I-D.ietf-cbor-sequence]</dt>
+<dd>
+<span class="refAuthor">Bormann, C.</span>, <span class="refTitle">"Concise Binary Object Representation (CBOR) Sequences"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cbor-sequence-02</span>, <time datetime="2019-09-25">25 September 2019</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-ietf-cbor-sequence-02.txt">http://www.ietf.org/internet-drafts/draft-ietf-cbor-sequence-02.txt</a>&gt;</span>. </dd>
+<dt id="I-D.ietf-tls-certificate-compression">[I-D.ietf-tls-certificate-compression]</dt>
+<dd>
+<span class="refAuthor">Ghedini, A.</span><span class="refAuthor"> and V. Vasiliev</span>, <span class="refTitle">"TLS Certificate Compression"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-certificate-compression-10</span>, <time datetime="2020-01-06">6 January 2020</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-ietf-tls-certificate-compression-10.txt">http://www.ietf.org/internet-drafts/draft-ietf-tls-certificate-compression-10.txt</a>&gt;</span>. </dd>
+<dt id="RFC2119">[RFC2119]</dt>
+<dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2119">https://www.rfc-editor.org/info/rfc2119</a>&gt;</span>. </dd>
+<dt id="RFC5280">[RFC5280]</dt>
+<dd>
+<span class="refAuthor">Cooper, D.</span><span class="refAuthor">, Santesson, S.</span><span class="refAuthor">, Farrell, S.</span><span class="refAuthor">, Boeyen, S.</span><span class="refAuthor">, Housley, R.</span><span class="refAuthor">, and W. Polk</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile"</span>, <span class="seriesInfo">RFC 5280</span>, <span class="seriesInfo">DOI 10.17487/RFC5280</span>, <time datetime="2008-05">May 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5280">https://www.rfc-editor.org/info/rfc5280</a>&gt;</span>. </dd>
+<dt id="RFC7049">[RFC7049]</dt>
+<dd>
+<span class="refAuthor">Bormann, C.</span><span class="refAuthor"> and P. Hoffman</span>, <span class="refTitle">"Concise Binary Object Representation (CBOR)"</span>, <span class="seriesInfo">RFC 7049</span>, <span class="seriesInfo">DOI 10.17487/RFC7049</span>, <time datetime="2013-10">October 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7049">https://www.rfc-editor.org/info/rfc7049</a>&gt;</span>. </dd>
+<dt id="RFC7925">[RFC7925]</dt>
+<dd>
+<span class="refAuthor">Tschofenig, H., Ed.</span><span class="refAuthor"> and T. Fossati</span>, <span class="refTitle">"Transport Layer Security (TLS) / Datagram Transport Layer Security (DTLS) Profiles for the Internet of Things"</span>, <span class="seriesInfo">RFC 7925</span>, <span class="seriesInfo">DOI 10.17487/RFC7925</span>, <time datetime="2016-07">July 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7925">https://www.rfc-editor.org/info/rfc7925</a>&gt;</span>. </dd>
+<dt id="RFC8174">[RFC8174]</dt>
+<dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8174">https://www.rfc-editor.org/info/rfc8174</a>&gt;</span>. </dd>
+<dt id="RFC8610">[RFC8610]</dt>
+<dd>
+<span class="refAuthor">Birkholz, H.</span><span class="refAuthor">, Vigano, C.</span><span class="refAuthor">, and C. Bormann</span>, <span class="refTitle">"Concise Data Definition Language (CDDL): A Notational Convention to Express Concise Binary Object Representation (CBOR) and JSON Data Structures"</span>, <span class="seriesInfo">RFC 8610</span>, <span class="seriesInfo">DOI 10.17487/RFC8610</span>, <time datetime="2019-06">June 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8610">https://www.rfc-editor.org/info/rfc8610</a>&gt;</span>. </dd>
+</dl>
+</section>
+<section id="section-10.2">
+        <h3 id="name-informative-references">
+<a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.ietf-tls-dtls13">[I-D.ietf-tls-dtls13]</dt>
+<dd>
+<span class="refAuthor">Rescorla, E.</span><span class="refAuthor">, Tschofenig, H.</span><span class="refAuthor">, and N. Modadugu</span>, <span class="refTitle">"The Datagram Transport Layer Security (DTLS) Protocol Version 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-dtls13-34</span>, <time datetime="2019-11-19">19 November 2019</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-ietf-tls-dtls13-34.txt">http://www.ietf.org/internet-drafts/draft-ietf-tls-dtls13-34.txt</a>&gt;</span>. </dd>
+<dt id="I-D.selander-ace-cose-ecdhe">[I-D.selander-ace-cose-ecdhe]</dt>
+<dd>
+<span class="refAuthor">Selander, G.</span><span class="refAuthor">, Mattsson, J.</span><span class="refAuthor">, and F. Palombini</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-selander-ace-cose-ecdhe-14</span>, <time datetime="2019-09-11">11 September 2019</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-selander-ace-cose-ecdhe-14.txt">http://www.ietf.org/internet-drafts/draft-selander-ace-cose-ecdhe-14.txt</a>&gt;</span>. </dd>
+<dt id="RFC6347">[RFC6347]</dt>
+<dd>
+<span class="refAuthor">Rescorla, E.</span><span class="refAuthor"> and N. Modadugu</span>, <span class="refTitle">"Datagram Transport Layer Security Version 1.2"</span>, <span class="seriesInfo">RFC 6347</span>, <span class="seriesInfo">DOI 10.17487/RFC6347</span>, <time datetime="2012-01">January 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6347">https://www.rfc-editor.org/info/rfc6347</a>&gt;</span>. </dd>
+<dt id="RFC7228">[RFC7228]</dt>
+<dd>
+<span class="refAuthor">Bormann, C.</span><span class="refAuthor">, Ersue, M.</span><span class="refAuthor">, and A. Keranen</span>, <span class="refTitle">"Terminology for Constrained-Node Networks"</span>, <span class="seriesInfo">RFC 7228</span>, <span class="seriesInfo">DOI 10.17487/RFC7228</span>, <time datetime="2014-05">May 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7228">https://www.rfc-editor.org/info/rfc7228</a>&gt;</span>. </dd>
+<dt id="RFC8446">[RFC8446]</dt>
+<dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="seriesInfo">RFC 8446</span>, <span class="seriesInfo">DOI 10.17487/RFC8446</span>, <time datetime="2018-08">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8446">https://www.rfc-editor.org/info/rfc8446</a>&gt;</span>. </dd>
+<dt id="RFC8613">[RFC8613]</dt>
+<dd>
+<span class="refAuthor">Selander, G.</span><span class="refAuthor">, Mattsson, J.</span><span class="refAuthor">, Palombini, F.</span><span class="refAuthor">, and L. Seitz</span>, <span class="refTitle">"Object Security for Constrained RESTful Environments (OSCORE)"</span>, <span class="seriesInfo">RFC 8613</span>, <span class="seriesInfo">DOI 10.17487/RFC8613</span>, <time datetime="2019-07">July 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8613">https://www.rfc-editor.org/info/rfc8613</a>&gt;</span>. </dd>
+<dt id="SECG">[SECG]</dt>
+<dd>
+<span class="refTitle">"Elliptic Curve Cryptography, Standards for Efficient Cryptography Group, ver. 2"</span>, <time datetime="2009">2009</time>, <span>&lt;<a href="https://secg.org/sec1-v2.pdf">https://secg.org/sec1-v2.pdf</a>&gt;</span>. </dd>
+<dt id="X.509-IoT">[X.509-IoT]</dt>
+<dd>
+<span class="refAuthor">Forsby, F.</span><span class="refAuthor">, Furuhed, M.</span><span class="refAuthor">, Papadimitratos, P.</span><span class="refAuthor">, and S. Raza</span>, <span class="refTitle">"Lightweight X.509 Digital Certificates for the Internet of Things."</span>, <span class="seriesInfo">Springer, Cham. Lecture Notes of the Institute for Computer Sciences, Social Informatics and Telecommunications Engineering, vol 242.</span>, <time datetime="2018-07">July 2018</time>, <span>&lt;<a href="https://doi.org/10.1007/978-3-319-93797-7_14">https://doi.org/10.1007/978-3-319-93797-7_14</a>&gt;</span>. </dd>
+</dl>
+</section>
+</section>
+<div id="appA">
+<section id="section-appendix.a">
+      <h2 id="name-example-cbor-certificates">
+<a href="#section-appendix.a" class="section-number selfRef">Appendix A. </a><a href="#name-example-cbor-certificates" class="section-name selfRef">Example CBOR Certificates</a>
+      </h2>
+<div id="example-x509-certificate">
+<section id="section-a.1">
+        <h2 id="name-example-x509-certificate">
+<a href="#section-a.1" class="section-number selfRef">A.1. </a><a href="#name-example-x509-certificate" class="section-name selfRef">Example X.509 Certificate</a>
+        </h2>
+<p id="section-a.1-1">Example RFC 7925 profiled X.509 certificate parsed with OpenSSL<a href="#section-a.1-1" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-a.1-2">
+<pre>
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 128269 (0x1f50d)
+        Signature Algorithm: ecdsa-with-SHA256
+        Issuer: CN=RFC test CA
+        Validity
+            Not Before: Jan  1 00:00:00 2020 GMT
+            Not After : Feb  2 00:00:00 2021 GMT
+        Subject: CN=01-23-45-FF-FE-67-89-AB
+        Subject Public Key Info:
+            Public Key Algorithm: id-ecPublicKey
+                Public-Key: (256 bit)
+                pub:
+                    04:ae:4c:db:01:f6:14:de:fc:71:21:28:5f:dc:7f:
+                    5c:6d:1d:42:c9:56:47:f0:61:ba:00:80:df:67:88:
+                    67:84:5e:e9:a6:9f:d4:89:31:49:da:e3:d3:b1:54:
+                    16:d7:53:2c:38:71:52:b8:0b:0d:f3:e1:af:40:8a:
+                    95:d3:07:1e:58
+                ASN1 OID: prime256v1
+                NIST CURVE: P-256
+        X509v3 extensions:
+            X509v3 Key Usage:
+                Digital Signature
+    Signature Algorithm: ecdsa-with-SHA256
+         30:44:02:20:37:38:73:ef:87:81:b8:82:97:ef:23:5c:1f:ac:
+         cf:62:da:4e:44:74:0d:c2:a2:e6:a3:c6:c8:82:a3:23:8d:9c:
+         02:20:3a:d9:35:3b:a7:88:68:3b:06:bb:48:fe:ca:16:ea:71:
+         17:17:34:c6:75:c5:33:2b:2a:f1:cb:73:38:10:a1:fc
+
+</pre><a href="#section-a.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-a.1-3">The DER encoding of the above certificate is 314 bytes<a href="#section-a.1-3" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-a.1-4">
+<pre>
+308201363081DEA003020102020301F50D300A06082A8648CE3D040302301631
+14301206035504030C0B5246432074657374204341301E170D32303031303130
+30303030305A170D3231303230323030303030305A30223120301E0603550403
+0C1730312D32332D34352D46462D46452D36372D38392D41423059301306072A
+8648CE3D020106082A8648CE3D03010703420004AE4CDB01F614DEFC7121285F
+DC7F5C6D1D42C95647F061BA0080DF678867845EE9A69FD4893149DAE3D3B154
+16D7532C387152B80B0DF3E1AF408A95D3071E58A30F300D300B0603551D0F04
+0403020780300A06082A8648CE3D04030203470030440220373873EF8781B882
+97EF235C1FACCF62DA4E44740DC2A2E6A3C6C882A3238D9C02203AD9353BA788
+683B06BB48FECA16EA71171734C675C5332B2AF1CB733810A1FC
+</pre><a href="#section-a.1-4" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="example-cbor-certificate-compression">
+<section id="section-a.2">
+        <h2 id="name-example-cbor-certificate-co">
+<a href="#section-a.2" class="section-number selfRef">A.2. </a><a href="#name-example-cbor-certificate-co" class="section-name selfRef">Example CBOR Certificate Compression</a>
+        </h2>
+<p id="section-a.2-1">The CBOR certificate compression of the X.509 in CBOR diagnostic format is<a href="#section-a.2-1" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-a.2-2">
+<pre>
+(
+  1,
+  h'128269',
+  "RFC test CA",
+  1577836800,
+  1612224000,
+  h'012345FFFE6789AB',
+  h'02ae4cdb01f614defc7121285fdc7f5c6d1d42c95647f061ba0080df678867845e',
+  {15: h'03020780'},
+  h'373873EF8781B88297EF235C1FACCF62DA4E44740DC2A2E6A3C6C882A3238D9C
+    3AD9353BA788683B06BB48FECA16EA71171734C675C5332B2AF1CB733810A1FC'
+)
+</pre><a href="#section-a.2-2" class="pilcrow">¶</a>
+</div>
+<p id="section-a.2-3">The CBOR encoding (CBOR sequence) of the CBOR certificate is 144 bytes<a href="#section-a.2-3" class="pilcrow">¶</a></p>
+<div class="artwork art-text alignLeft" id="section-a.2-4">
+<pre>
+01431282696B52464320746573742043411A5E0BE1001A6018960048012345FF
+FE6789AB582102AE4CDB01F614DEFC7121285FDC7F5C6D1D42C95647F061BA00
+80DF678867845EA10F44030207805840373873EF8781B88297EF235C1FACCF62
+DA4E44740DC2A2E6A3C6C882A3238D9C3AD9353BA788683B06BB48FECA16EA71
+171734C675C5332B2AF1CB733810A1FC
+</pre><a href="#section-a.2-4" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="example-native-cbor-certificate">
+<section id="section-a.3">
+        <h2 id="name-example-native-cbor-certifi">
+<a href="#section-a.3" class="section-number selfRef">A.3. </a><a href="#name-example-native-cbor-certifi" class="section-name selfRef">Example Native CBOR Certificate</a>
+        </h2>
+<p id="section-a.3-1">The corresponfing native CBOR certificate in CBOR diagnostic format is<a href="#section-a.3-1" class="pilcrow">¶</a></p>
+<p id="section-a.3-2">TODO<a href="#section-a.3-2" class="pilcrow">¶</a></p>
+<p id="section-a.3-3">The CBOR encoding (CBOR sequence) of the CBOR certificate is 142 bytes<a href="#section-a.3-3" class="pilcrow">¶</a></p>
+<p id="section-a.3-4">TODO<a href="#section-a.3-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="appB">
+<section id="section-appendix.b">
+      <h2 id="name-x509-certificate-profile-as">
+<a href="#section-appendix.b" class="section-number selfRef">Appendix B. </a><a href="#name-x509-certificate-profile-as" class="section-name selfRef">X.509 Certificate Profile, ASN.1</a>
+      </h2>
+<div class="artwork art-text alignLeft art-ASN.1" id="section-appendix.b-1">
+<pre>
+IOTCertificate DEFINITIONS EXPLICIT TAGS ::= BEGIN
+
+Certificate  ::= SEQUENCE {
+  tbsCertificate        TBSCertificate,
+  signatureAlgorithm    SignatureIdentifier,
+  signatureValue        BIT STRING
+}
+
+TBSCertificate  ::= SEQUENCE {
+  version           [0] INTEGER {v3(2)},
+  serialNumber          INTEGER (1..MAX),
+  signature             SignatureIdentifier,
+  issuer                Name,
+  validity              Validity,
+  subject               Name,
+  subjectPublicKeyInfo  SubjectPublicKeyInfo,
+  extensions        [3] Extensions OPTIONAL
+}
+
+SignatureIdentifier  ::= SEQUENCE {
+  algorithm         OBJECT IDENTIFIER (ecdsa-with-SHA256)
+}
+
+Name  ::= SEQUENCE SIZE (1) OF DistinguishedName
+
+DistinguishedName  ::= SET SIZE (1) OF CommonName
+
+CommonName  ::= SEQUENCE {
+  type              OBJECT IDENTIFIER (id-at-commonName),
+  value             UTF8String
+}
+
+Validity  ::= SEQUENCE {
+  notBefore         UTCTime,
+  notAfter          UTCTime
+}
+
+SubjectPublicKeyInfo  ::= SEQUENCE {
+  algorithm         AlgorithmIdentifier,
+  subjectPublicKey  BIT STRING
+}
+
+AlgorithmIdentifier  ::= SEQUENCE {
+  algorithm         OBJECT IDENTIFIER (id-ecPublicKey),
+  parameters        OBJECT IDENTIFIER (prime256v1)
+}
+
+Extensions  ::= SEQUENCE SIZE (1..MAX) OF Extension
+
+Extension  ::= SEQUENCE {
+  extnId            OBJECT IDENTIFIER,
+  critical          BOOLEAN DEFAULT FALSE,
+  extnValue         OCTET STRING
+ }
+
+ansi-X9-62          OBJECT IDENTIFIER   ::=
+         {iso(1) member-body(2) us(840) 10045}
+
+id-ecPublicKey      OBJECT IDENTIFIER   ::=
+         {ansi-X9-62 keyType(2) 1}
+
+prime256v1          OBJECT IDENTIFIER   ::=
+         {ansi-X9-62 curves(3) prime(1) 7}
+
+ecdsa-with-SHA256   OBJECT IDENTIFIER   ::=
+         {ansi-X9-62 signatures(4) ecdsa-with-SHA2(3) 2}
+
+id-at-commonName    OBJECT IDENTIFIER   ::=
+         {joint-iso-itu-t(2) ds(5) attributeType(4) 3}
+
+END
+</pre><a href="#section-appendix.b-1" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="section-appendix.c">
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Shahid Raza</span></div>
+<div dir="auto" class="left"><span class="org">RISE AB</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:shahid.raza@ri.se" class="email">shahid.raza@ri.se</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Joel Höglund</span></div>
+<div dir="auto" class="left"><span class="org">RISE AB</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:joel.hoglund@ri.se" class="email">joel.hoglund@ri.se</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Göran Selander</span></div>
+<div dir="auto" class="left"><span class="org">Ericsson AB</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:goran.selander@ericsson.com" class="email">goran.selander@ericsson.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">John Preuß Mattsson</span></div>
+<div dir="auto" class="left"><span class="org">Ericsson AB</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:john.mattsson@ericsson.com" class="email">john.mattsson@ericsson.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Martin Furuhed</span></div>
+<div dir="auto" class="left"><span class="org">Nexus Group</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:martin.furuhed@nexusgroup.com" class="email">martin.furuhed@nexusgroup.com</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
