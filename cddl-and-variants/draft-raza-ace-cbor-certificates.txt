@@ -5,12 +5,12 @@
 ACE Working Group                                                S. Raza
 Internet-Draft                                                J. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 7 September 2020                                    G. Selander
+Expires: 21 December 2020                                    G. Selander
                                                              J. Mattsson
                                                              Ericsson AB
                                                               M. Furuhed
                                                              Nexus Group
-                                                            6 March 2020
+                                                            19 June 2020
 
 
                    CBOR Profile of X.509 Certificates
@@ -21,7 +21,7 @@ Abstract
    This document specifies a CBOR encoding and profiling of X.509 public
    key certificate suitable for Internet of Things (IoT) deployments.
    The full X.509 public key certificate format and commonly used ASN.1
-   encoding is overly verbose for constrained IoT environments.
+   DER encoding is overly verbose for constrained IoT environments.
    Profiling together with CBOR encoding reduces the certificate size
    significantly with associated known performance benefits.
 
@@ -44,7 +44,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 September 2020.
+   This Internet-Draft will expire on 21 December 2020.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Raza, et al.            Expires 7 September 2020                [Page 1]
+Raza, et al.            Expires 21 December 2020                [Page 1]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -74,21 +74,21 @@ Table of Contents
    3.  CBOR Encoding . . . . . . . . . . . . . . . . . . . . . . . .   4
    4.  Deployment settings . . . . . . . . . . . . . . . . . . . . .   6
    5.  Expected Certificate Sizes  . . . . . . . . . . . . . . . . .   7
-   6.  Native CBOR Certificates  . . . . . . . . . . . . . . . . . .   7
-   7.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+   6.  Native CBOR Certificates  . . . . . . . . . . . . . . . . . .   8
+   7.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
    8.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .   8
    9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
-     9.1.  CBOR Certificate Types Registry . . . . . . . . . . . . .   8
-     9.2.  CBOR Certificate Signature Algorithms Registry  . . . . .   8
+     9.1.  CBOR Certificate Types Registry . . . . . . . . . . . . .   9
+     9.2.  CBOR Certificate Signature Algorithms Registry  . . . . .   9
      9.3.  CBOR Certificate Public Key Algorithms Registry . . . . .   9
-   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
-     10.1.  Normative References . . . . . . . . . . . . . . . . . .   9
-     10.2.  Informative References . . . . . . . . . . . . . . . . .  10
-   Appendix A.  Example CBOR Certificates  . . . . . . . . . . . . .  11
-     A.1.  Example X.509 Certificate . . . . . . . . . . . . . . . .  11
-     A.2.  Example CBOR Certificate Compression  . . . . . . . . . .  12
+   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
+     10.1.  Normative References . . . . . . . . . . . . . . . . . .  10
+     10.2.  Informative References . . . . . . . . . . . . . . . . .  11
+   Appendix A.  Example CBOR Certificates  . . . . . . . . . . . . .  12
+     A.1.  Example X.509 Certificate . . . . . . . . . . . . . . . .  12
+     A.2.  Example CBOR Certificate Compression  . . . . . . . . . .  13
      A.3.  Example Native CBOR Certificate . . . . . . . . . . . . .  13
-   Appendix B.  X.509 Certificate Profile, ASN.1 . . . . . . . . . .  13
+   Appendix B.  X.509 Certificate Profile, ASN.1 . . . . . . . . . .  14
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  15
 
 1.  Introduction
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Raza, et al.            Expires 7 September 2020                [Page 2]
+Raza, et al.            Expires 21 December 2020                [Page 2]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
 
 
    CBOR is a data format designed for small code size and small message
@@ -165,9 +165,9 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
 
 
 
-Raza, et al.            Expires 7 September 2020                [Page 3]
+Raza, et al.            Expires 21 December 2020                [Page 3]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
 
 
 3.  CBOR Encoding
@@ -212,37 +212,53 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
    *  subject.  The 'subject' field is restricted to specifying the
       value of the common name.  By RFC 7925 an IoT subject is
       identified by either an EUI-64 for clients, or by a FQDN for
-      servers.  An EUI-64 mapped from an EUI-48 MAC address is encoded
-      as a CBOR byte string of length 6.  Other EUI-64 is ncoded as a
-      CBOR byte string of length 8.  A FQDN is encoded as a CBOR text
-      string.
+      servers.  An EUI-64 mapped from a 48-bit MAC address is encoded as
+      a CBOR byte string of length 6.  Other EUI-64 is ncoded as a CBOR
+      byte string of length 8.  A FQDN is encoded as a CBOR text string.
 
 
 
 
 
-Raza, et al.            Expires 7 September 2020                [Page 4]
+
+Raza, et al.            Expires 21 December 2020                [Page 4]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
 
 
    *  subjectPublicKeyInfo.  If the 'algorithm' field is the default
       (id-ecPublicKey and prime256v1), it is omitted in the CBOR
       encoding., otherwise it is included in the
       subjectPublicKeyInfo_algorithm field encoded as a int, (see
-      Section 9).  The 'subjectPublicKey' is encoded as as a point
-      compressed public key as defined in Section 2.3.3 of [SECG].
+      Section 9).  The 'subjectPublicKey' is encoded as as a CBOR byte
+      string.  Public keys of type id-ecPublicKey are point compressed
+      as defined in Section 2.3.3 of [SECG].
 
-   *  extensions.  The 'extensions' field is encoded as a CBOR map from
-      int to bytes.  The 'extnID' and the 'critical' fields are encoded
-      as and CBOR integer.  The OIDs for the four extensions mandated to
-      be supported by RFC 7925 always start with 2.5.29.  The trailing
-      integer is encoded as the magnitude of the CBOR int.  The
-      extensions (non-critical) mandated by RFC 7925 are therefore
-      encoded as magnitude 15, 17, 19, and 37.  The 'critical' field is
-      encoded as the sign of the CBOR int, with critical extensions
-      having a negative sign.  The 'extnValue' field is encoded as a
-      CBOR byte string.
+   *  extensions.  The 'extensions' field is encoded as a CBOR array
+      where each extension is represented with an int.  The extensions
+      mandated to be supported by RFC 7925 is encodeded as specified
+      below, where a critical extensions are encoded with a negative
+      sign.
+
+      I.e. non-critical keyUsage keyAgreement is encoded as 5, critical
+      basicConstraints cA is encodes as -3, and non-criticical
+      extKeyUsage id-kp-codeSigning + id-kp-OCSPSigning is encoded as
+      22.
+
+      If subjectAltName is present, the value is placed at the end of
+      the array encoded as a byte or text string following the encoding
+      rules for the subject field.  If the array contains a single int,
+      extensions is encoded as the int instead of an array.
+
+      subjectAltName = 1
+
+      basicConstraints = 2 + cA
+
+      keyUsage = 3 + digitalSignature
+               + 2 * keyAgreement + 4 * keyCertSign
+
+      extKeyUsage = 10 + id-kp-serverAuth + 2 * id-kp-clientAuth
+                  + 4 * id-kp-codeSigning + 8 * id-kp-OCSPSigning
 
    *  signatureAlgorithm.  If the 'signatureAlgorithm' field is the
       default (ecdsa-with-SHA256) it is omitted in the CBOR encoding,
@@ -252,35 +268,25 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
    *  signatureValue.  Since the signature algorithm and resulting
       signature length are known, padding and extra length fields which
       are present in the ASN.1 encoding are omitted and the
-      'signatureValue' field is encoded as a CBOR byte string.
+      'signatureValue' field is encoded as a CBOR byte string.  For
+      native CBOR certificates the signatureValue is calculated over the
+      certificate CBOR sequence excluding the signatureValue.
 
    In addition to the above fields present in X.509, the CBOR ecoding
    introduces an additional field
+
+
+
+Raza, et al.            Expires 21 December 2020                [Page 5]
+
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
+
 
    *  type.  A CBOR int used to indicate the type of CBOR certificate.
       Currently type can be a native CBOR certificate (type = 0) or a
       CBOR compressed X.509 certificates (type = 1), see Section 9.
 
-   The Concise Data Definition Language (CDDL) for a CBOR certificate
-   is:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Raza, et al.            Expires 7 September 2020                [Page 5]
-
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
-
+   The Concise Data Definition Language (CDDL) for CBOR certificate is:
 
    certificate = (
       type : int,
@@ -290,13 +296,27 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
       validity_notAfter: uint,
       subject : text / bytes
       subjectPublicKey : bytes
-      extensions : { * int => bytes },
+      extensions : [ *4 int, ? text / bytes ] / int,
       signatureValue : bytes,
-      ? ( signatureAlgorithm : int, subjectPublicKeyInfo_algorithm : int )
+      ? ( signatureAlgorithm : int,
+          subjectPublicKeyInfo_algorithm : int )
    )
 
-   TODO - Specify the exact content to sign when type = 0.  This is not
-   defined.
+   The signatureValue for native CBOR certificates is calculated over
+   the CBOR sequence:
+
+   (
+      type : int,
+      serialNumber : bytes,
+      issuer : { + int => bytes } / text,
+      validity_notBefore: uint,
+      validity_notAfter: uint,
+      subject : text / bytes
+      subjectPublicKey : bytes
+      extensions : [ *4 int, ? text / bytes ] / int,
+      ? ( signatureAlgorithm : int,
+          subjectPublicKeyInfo_algorithm : int )
+   )
 
    TODO - Specify exactly how issuer is encoded into a map / text and
    back again.
@@ -307,6 +327,16 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
    CA infrastructure.  In order to verify the signature, the CBOR
    certificate is used to recreate the original X.509 data structure to
    be able to verify the signature.
+
+
+
+
+
+
+Raza, et al.            Expires 21 December 2020                [Page 6]
+
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
+
 
    For the currently used DTLS v1.2 protocol, where the handshake is
    sent unencrypted, the actual encoding and compression can be done at
@@ -330,37 +360,39 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
    encoding/decoding functionality to the server.  This corresponds to
    the proposed native mode, a new certificate compression scheme.  The
    required changes on the server side are in line with recent protocols
-
-
-
-Raza, et al.            Expires 7 September 2020                [Page 6]
-
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
-
-
    utilizing cbor encoding for communication with resource constrained
    devices [RFC8613].
 
 5.  Expected Certificate Sizes
 
-   The profiling size saving mainly comes from enforcing removal of
-   issuer and subject info fields besides the common name.  The encoding
-   savings are presented above in Section 3, for a sample certificate
-   given in Appendix A resulting in the numbers shown in Figure 1.
+   The CBOR encoding of the sample certificate given in Appendix A
+   results in the numbers shown in Figure 1.  After RFC 7925 profiling,
+   most duplicated information has been removed, and the remaining text
+   strings are minimal in size.  Therefore the further size reduction
+   reached with general compression mechanisms will be small, mainly
+   corresponding to making the ASN.1 endcoding more compact.  The zlib
+   number was calculated with zlib-flate.
 
-   After profiling, all duplicated information has been removed, and
-   remaining text strings are minimal in size.  Therefore the further
-   size reduction reached with general compression mechanisms will be
-   small, mainly corresponding to making the ASN.1 endcoding more
-   compact.
+   zlib-flate -compress < cert.der > cert.compressed
 
-    +-----------------------------------------------------------------+
-    |                   | X.509 Profiled | CBOR Encoded |    Zlib     |
-    +-----------------------------------------------------------------+
-    | Certificate Size  |      314       |     144      |     295     |
-    +-----------------------------------------------------------------+
+   +------------------+--------------+------------+--------------------+
+   |                  |   RFC 7925   |    zlib    |  CBOR Certificate  |
+   +------------------+---------------------------+--------------------+
+   | Certificate Size |     314      |     295    |         136        |
+   +------------------+--------------+------------+--------------------+
 
              Figure 1: Comparing Sizes of Certificates (bytes)
+
+
+
+
+
+
+
+Raza, et al.            Expires 21 December 2020                [Page 7]
+
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
+
 
 6.  Native CBOR Certificates
 
@@ -386,14 +418,6 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
    decreases the number of fields transmitted, which reduces the risk
    for implementation errors.
 
-
-
-
-Raza, et al.            Expires 7 September 2020                [Page 7]
-
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
-
-
    Conversion between the certificate formats can be made in constant
    time to reduce risk of information leakage through side channels.
 
@@ -414,6 +438,17 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
    certificates.
 
 9.  IANA Considerations
+
+
+
+
+
+
+
+Raza, et al.            Expires 21 December 2020                [Page 8]
+
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
+
 
 9.1.  CBOR Certificate Types Registry
 
@@ -441,15 +476,6 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
    integer and the other columns are text strings.  The initial contents
    of the registry are:
 
-
-
-
-
-Raza, et al.            Expires 7 September 2020                [Page 8]
-
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
-
-
    +-------+---------------------------------------+-------------------+
    | Value | X.509 Signature Algorithm             | Reference         |
    +-------+---------------------------------------+-------------------+
@@ -471,6 +497,14 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
    registry are Value, X.509 Algorithm, and Reference, where Value is an
    integer and the other columns are text strings.  The initial contents
    of the registry are:
+
+
+
+
+Raza, et al.            Expires 21 December 2020                [Page 9]
+
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
+
 
    +-------+---------------------------------------+-------------------+
    | Value | X.509 Public Key Algorithm            | Reference         |
@@ -494,21 +528,6 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
               Sequences", Work in Progress, Internet-Draft, draft-ietf-
               cbor-sequence-02, 25 September 2019, <http://www.ietf.org/
               internet-drafts/draft-ietf-cbor-sequence-02.txt>.
-
-   [I-D.ietf-tls-certificate-compression]
-              Ghedini, A. and V. Vasiliev, "TLS Certificate
-              Compression", Work in Progress, Internet-Draft, draft-
-
-
-
-Raza, et al.            Expires 7 September 2020                [Page 9]
-
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
-
-
-              ietf-tls-certificate-compression-10, 6 January 2020,
-              <http://www.ietf.org/internet-drafts/draft-ietf-tls-
-              certificate-compression-10.txt>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -535,6 +554,14 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
+
+
+
+Raza, et al.            Expires 21 December 2020               [Page 10]
+
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
+
+
    [RFC8610]  Birkholz, H., Vigano, C., and C. Bormann, "Concise Data
               Definition Language (CDDL): A Notational Convention to
               Express Concise Binary Object Representation (CBOR) and
@@ -547,27 +574,15 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
               Rescorla, E., Tschofenig, H., and N. Modadugu, "The
               Datagram Transport Layer Security (DTLS) Protocol Version
               1.3", Work in Progress, Internet-Draft, draft-ietf-tls-
-              dtls13-34, 19 November 2019, <http://www.ietf.org/
-              internet-drafts/draft-ietf-tls-dtls13-34.txt>.
+              dtls13-38, 29 May 2020, <http://www.ietf.org/internet-
+              drafts/draft-ietf-tls-dtls13-38.txt>.
 
    [I-D.selander-ace-cose-ecdhe]
               Selander, G., Mattsson, J., and F. Palombini, "Ephemeral
               Diffie-Hellman Over COSE (EDHOC)", Work in Progress,
               Internet-Draft, draft-selander-ace-cose-ecdhe-14, 11
-
-
-
-Raza, et al.            Expires 7 September 2020               [Page 10]
-
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
-
-
               September 2019, <http://www.ietf.org/internet-drafts/
               draft-selander-ace-cose-ecdhe-14.txt>.
-
-   [RFC6347]  Rescorla, E. and N. Modadugu, "Datagram Transport Layer
-              Security Version 1.2", RFC 6347, DOI 10.17487/RFC6347,
-              January 2012, <https://www.rfc-editor.org/info/rfc6347>.
 
    [RFC7228]  Bormann, C., Ersue, M., and A. Keranen, "Terminology for
               Constrained-Node Networks", RFC 7228,
@@ -595,28 +610,19 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
               Telecommunications Engineering, vol 242., July 2018,
               <https://doi.org/10.1007/978-3-319-93797-7_14>.
 
+
+
+
+Raza, et al.            Expires 21 December 2020               [Page 11]
+
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
+
+
 Appendix A.  Example CBOR Certificates
 
 A.1.  Example X.509 Certificate
 
    Example RFC 7925 profiled X.509 certificate parsed with OpenSSL
-
-
-
-
-
-
-
-
-
-
-
-
-
-Raza, et al.            Expires 7 September 2020               [Page 11]
-
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
-
 
    Certificate:
        Data:
@@ -661,18 +667,17 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
    97EF235C1FACCF62DA4E44740DC2A2E6A3C6C882A3238D9C02203AD9353BA788
    683B06BB48FECA16EA71171734C675C5332B2AF1CB733810A1FC
 
+
+
+Raza, et al.            Expires 21 December 2020               [Page 12]
+
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
+
+
 A.2.  Example CBOR Certificate Compression
 
    The CBOR certificate compression of the X.509 in CBOR diagnostic
    format is
-
-
-
-
-Raza, et al.            Expires 7 September 2020               [Page 12]
-
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
-
 
    (
      1,
@@ -680,33 +685,59 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
      "RFC test CA",
      1577836800,
      1612224000,
-     h'012345FFFE6789AB',
-     h'02ae4cdb01f614defc7121285fdc7f5c6d1d42c95647f061ba0080df678867845e',
-     {15: h'03020780'},
-     h'373873EF8781B88297EF235C1FACCF62DA4E44740DC2A2E6A3C6C882A3238D9C
-       3AD9353BA788683B06BB48FECA16EA71171734C675C5332B2AF1CB733810A1FC'
+     h'0123456789AB',
+     h'02ae4cdb01f614defc7121285fdc7f5c6d1d42c95647f061ba
+       0080df678867845e',
+     5,
+     h'373873EF8781B88297EF235C1FACCF62DA4E44740DC2A2E6A3
+       C6C882A3238D9C3AD9353BA788683B06BB48FECA16EA711717
+       34C675C5332B2AF1CB733810A1FC'
    )
 
-   The CBOR encoding (CBOR sequence) of the CBOR certificate is 144
+   The CBOR encoding (CBOR sequence) of the CBOR certificate is 136
    bytes
 
-   01431282696B52464320746573742043411A5E0BE1001A6018960048012345FF
-   FE6789AB582102AE4CDB01F614DEFC7121285FDC7F5C6D1D42C95647F061BA00
-   80DF678867845EA10F44030207805840373873EF8781B88297EF235C1FACCF62
-   DA4E44740DC2A2E6A3C6C882A3238D9C3AD9353BA788683B06BB48FECA16EA71
-   171734C675C5332B2AF1CB733810A1FC
+   01431282696B52464320746573742043411A5E0BE1001A601896004601234567
+   89AB582102AE4CDB01F614DEFC7121285FDC7F5C6D1D42C95647F061BA0080DF
+   678867845E055840373873EF8781B88297EF235C1FACCF62DA4E44740DC2A2E6
+   A3C6C882A3238D9C3AD9353BA788683B06BB48FECA16EA71171734C675C5332B
+   2AF1CB733810A1FC
 
 A.3.  Example Native CBOR Certificate
 
    The corresponfing native CBOR certificate in CBOR diagnostic format
-   is
+   is equal execpt for type and signatureValue
 
-   TODO
+   (
+     0,
+     h'128269',
+     "RFC test CA",
+     1577836800,
+     1612224000,
+     h'0123456789AB',
+     h'02ae4cdb01f614defc7121285fdc7f5c6d1d42c95647f061
+       ba0080df678867845e',
+     5,
+     h'7F10A063DA8DB2FD49414440CDF85070AC22A266C7F1DFB1
+       577D9A35A295A8742E794258B76968C097F85542322A0796
+       0199C13CC0220A9BC729EF2ECA638CFE'
+   )
 
-   The CBOR encoding (CBOR sequence) of the CBOR certificate is 142
+
+
+Raza, et al.            Expires 21 December 2020               [Page 13]
+
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
+
+
+   The CBOR encoding (CBOR sequence) of the CBOR certificate is 136
    bytes
 
-   TODO
+   00431282696B52464320746573742043411A5E0BE1001A601896004601234567
+   89AB582102AE4CDB01F614DEFC7121285FDC7F5C6D1D42C95647F061BA0080DF
+   678867845E0558407F10A063DA8DB2FD49414440CDF85070AC22A266C7F1DFB1
+   577D9A35A295A8742E794258B76968C097F85542322A07960199C13CC0220A9B
+   C729EF2ECA638CFE
 
 Appendix B.  X.509 Certificate Profile, ASN.1
 
@@ -714,31 +745,19 @@ Appendix B.  X.509 Certificate Profile, ASN.1
 
    Certificate  ::= SEQUENCE {
      tbsCertificate        TBSCertificate,
-     signatureAlgorithm    SignatureIdentifier,
+     signatureAlgorithm    AlgorithmIdentifier,
      signatureValue        BIT STRING
    }
 
    TBSCertificate  ::= SEQUENCE {
      version           [0] INTEGER {v3(2)},
      serialNumber          INTEGER (1..MAX),
-     signature             SignatureIdentifier,
-
-
-
-Raza, et al.            Expires 7 September 2020               [Page 13]
-
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
-
-
+     signature             AlgorithmIdentifier,
      issuer                Name,
      validity              Validity,
      subject               Name,
      subjectPublicKeyInfo  SubjectPublicKeyInfo,
      extensions        [3] Extensions OPTIONAL
-   }
-
-   SignatureIdentifier  ::= SEQUENCE {
-     algorithm         OBJECT IDENTIFIER (ecdsa-with-SHA256)
    }
 
    Name  ::= SEQUENCE SIZE (1) OF DistinguishedName
@@ -760,9 +779,16 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
      subjectPublicKey  BIT STRING
    }
 
-   AlgorithmIdentifier  ::= SEQUENCE {
-     algorithm         OBJECT IDENTIFIER (id-ecPublicKey),
-     parameters        OBJECT IDENTIFIER (prime256v1)
+
+
+Raza, et al.            Expires 21 December 2020               [Page 14]
+
+Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
+
+
+   AlgorithmIdentifier  ::=  SEQUENCE  {
+     algorithm         OBJECT IDENTIFIER,
+     parameters        ANY DEFINED BY algorithm OPTIONAL  }
    }
 
    Extensions  ::= SEQUENCE SIZE (1..MAX) OF Extension
@@ -772,25 +798,6 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
      critical          BOOLEAN DEFAULT FALSE,
      extnValue         OCTET STRING
     }
-
-   ansi-X9-62          OBJECT IDENTIFIER   ::=
-            {iso(1) member-body(2) us(840) 10045}
-
-   id-ecPublicKey      OBJECT IDENTIFIER   ::=
-            {ansi-X9-62 keyType(2) 1}
-
-
-
-Raza, et al.            Expires 7 September 2020               [Page 14]
-
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
-
-
-   prime256v1          OBJECT IDENTIFIER   ::=
-            {ansi-X9-62 curves(3) prime(1) 7}
-
-   ecdsa-with-SHA256   OBJECT IDENTIFIER   ::=
-            {ansi-X9-62 signatures(4) ecdsa-with-SHA2(3) 2}
 
    id-at-commonName    OBJECT IDENTIFIER   ::=
             {joint-iso-itu-t(2) ds(5) attributeType(4) 3}
@@ -830,11 +837,4 @@ Authors' Addresses
 
 
 
-
-
-
-
-
-
-
-Raza, et al.            Expires 7 September 2020               [Page 15]
+Raza, et al.            Expires 21 December 2020               [Page 15]
