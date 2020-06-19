@@ -206,7 +206,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          June 2020
       CBOR map.  The value is represented as an array, including the
       original byte value and the value type used for canonical
       recomposition.  If only CN is present the value can be encoded as
-      a single byte value.
+      a single byte or text value.
 
    *  validity.  The 'notBefore' and 'notAfter' UTCTime fields are
       encoded as as UnixTime in unsigned integer format.
