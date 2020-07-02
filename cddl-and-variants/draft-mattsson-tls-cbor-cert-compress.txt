@@ -7,10 +7,10 @@ Internet-Draft                                               G. Selander
 Updates: draft-ietf-tls-certificate-compression              Ericsson AB
          (if approved)                                           S. Raza
 Intended status: Standards Track                              J. Höglund
-Expires: 21 December 2020                                        RISE AB
+Expires: 3 January 2021                                          RISE AB
                                                               M. Furuhed
                                                              Nexus Group
-                                                            19 June 2020
+                                                             2 July 2020
 
 
        CBOR Certificate Algorithm for TLS Certificate Compression
@@ -44,7 +44,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 December 2020.
+   This Internet-Draft will expire on 3 January 2021.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Preuss Mattsson, et al. Expires 21 December 2020                [Page 1]
+Preuss Mattsson, et al.  Expires 3 January 2021                 [Page 1]
 
-Internet-Draft    CBOR Certificate Compression for TLS         June 2020
+Internet-Draft    CBOR Certificate Compression for TLS         July 2020
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Preuss Mattsson, et al. Expires 21 December 2020                [Page 2]
+Preuss Mattsson, et al.  Expires 3 January 2021                 [Page 2]
 
-Internet-Draft    CBOR Certificate Compression for TLS         June 2020
+Internet-Draft    CBOR Certificate Compression for TLS         July 2020
 
 
    This document specifies the CBOR certificate compression algorithm
@@ -165,9 +165,9 @@ Internet-Draft    CBOR Certificate Compression for TLS         June 2020
 
 
 
-Preuss Mattsson, et al. Expires 21 December 2020                [Page 3]
+Preuss Mattsson, et al.  Expires 3 January 2021                 [Page 3]
 
-Internet-Draft    CBOR Certificate Compression for TLS         June 2020
+Internet-Draft    CBOR Certificate Compression for TLS         July 2020
 
 
 5.  IANA Considerations
@@ -221,9 +221,9 @@ Internet-Draft    CBOR Certificate Compression for TLS         June 2020
 
 
 
-Preuss Mattsson, et al. Expires 21 December 2020                [Page 4]
+Preuss Mattsson, et al.  Expires 3 January 2021                 [Page 4]
 
-Internet-Draft    CBOR Certificate Compression for TLS         June 2020
+Internet-Draft    CBOR Certificate Compression for TLS         July 2020
 
 
    [RFC7049]  Bormann, C. and P. Hoffman, "Concise Binary Object
@@ -277,9 +277,9 @@ Authors' Addresses
 
 
 
-Preuss Mattsson, et al. Expires 21 December 2020                [Page 5]
+Preuss Mattsson, et al.  Expires 3 January 2021                 [Page 5]
 
-Internet-Draft    CBOR Certificate Compression for TLS         June 2020
+Internet-Draft    CBOR Certificate Compression for TLS         July 2020
 
 
    John Preuss Mattsson
@@ -333,4 +333,4 @@ Internet-Draft    CBOR Certificate Compression for TLS         June 2020
 
 
 
-Preuss Mattsson, et al. Expires 21 December 2020                [Page 6]
+Preuss Mattsson, et al.  Expires 3 January 2021                 [Page 6]
