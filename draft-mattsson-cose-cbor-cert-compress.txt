@@ -6,11 +6,11 @@ Network Working Group                                 J. Preuss Mattsson
 Internet-Draft                                               G. Selander
 Updates: draft-ietf-cose-x509 (if approved)                  Ericsson AB
 Intended status: Standards Track                                 S. Raza
-Expires: 9 September 2020                                     J. Höglund
+Expires: 8 January 2021                                       J. Höglund
                                                                  RISE AB
                                                               M. Furuhed
                                                              Nexus Group
-                                                            8 March 2020
+                                                             7 July 2020
 
 
   CBOR Object Signing and Encryption (COSE): Headers for Carrying CBOR
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 September 2020.
+   This Internet-Draft will expire on 8 January 2021.
 
 
 
@@ -53,9 +53,9 @@ Status of This Memo
 
 
 
-Preuss Mattsson, et al. Expires 9 September 2020                [Page 1]
+Preuss Mattsson, et al.  Expires 8 January 2021                 [Page 1]
 
-Internet-Draft    CBOR Certificate Compression for COSE       March 2020
+Internet-Draft    CBOR Certificate Compression for COSE        July 2020
 
 
 Copyright Notice
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Preuss Mattsson, et al. Expires 9 September 2020                [Page 2]
+Preuss Mattsson, et al.  Expires 8 January 2021                 [Page 2]
 
-Internet-Draft    CBOR Certificate Compression for COSE       March 2020
+Internet-Draft    CBOR Certificate Compression for COSE        July 2020
 
 
    This document specifies the CBOR certificate compression algorithm
@@ -165,9 +165,9 @@ Internet-Draft    CBOR Certificate Compression for COSE       March 2020
 
 
 
-Preuss Mattsson, et al. Expires 9 September 2020                [Page 3]
+Preuss Mattsson, et al.  Expires 8 January 2021                 [Page 3]
 
-Internet-Draft    CBOR Certificate Compression for COSE       March 2020
+Internet-Draft    CBOR Certificate Compression for COSE        July 2020
 
 
    +-----------+-------+----------------+---------------------+
@@ -205,25 +205,25 @@ Internet-Draft    CBOR Certificate Compression for COSE       March 2020
 
    [I-D.ietf-cose-x509]
               Schaad, J., "CBOR Object Signing and Encryption (COSE):
-              Headers for carrying and referencing X.509 certificates",
-              Work in Progress, Internet-Draft, draft-ietf-cose-x509-05,
-              4 November 2019, <http://www.ietf.org/internet-drafts/
-              draft-ietf-cose-x509-05.txt>.
+              Header parameters for carrying and referencing X.509
+              certificates", Work in Progress, Internet-Draft, draft-
+              ietf-cose-x509-06, 9 March 2020, <http://www.ietf.org/
+              internet-drafts/draft-ietf-cose-x509-06.txt>.
 
    [I-D.raza-ace-cbor-certificates]
               Raza, S., Hoglund, J., Selander, G., Mattsson, J., and M.
               Furuhed, "CBOR Profile of X.509 Certificates", Work in
               Progress, Internet-Draft, draft-raza-ace-cbor-
-              certificates-03, 20 December 2019, <http://www.ietf.org/
-              internet-drafts/draft-raza-ace-cbor-certificates-03.txt>.
+              certificates-04, 9 March 2020, <http://www.ietf.org/
+              internet-drafts/draft-raza-ace-cbor-certificates-04.txt>.
 
 
 
 
 
-Preuss Mattsson, et al. Expires 9 September 2020                [Page 4]
+Preuss Mattsson, et al.  Expires 8 January 2021                 [Page 4]
 
-Internet-Draft    CBOR Certificate Compression for COSE       March 2020
+Internet-Draft    CBOR Certificate Compression for COSE        July 2020
 
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -251,15 +251,15 @@ Internet-Draft    CBOR Certificate Compression for COSE       March 2020
               Sethi, M., Mattsson, J., and S. Turner, "Handling Large
               Certificates and Long Certificate Chains in TLS-based EAP
               Methods", Work in Progress, Internet-Draft, draft-ietf-
-              emu-eaptlscert-01, 5 March 2020, <http://www.ietf.org/
-              internet-drafts/draft-ietf-emu-eaptlscert-01.txt>.
+              emu-eaptlscert-05, 15 June 2020, <http://www.ietf.org/
+              internet-drafts/draft-ietf-emu-eaptlscert-05.txt>.
 
    [I-D.ietf-lake-reqs]
               Vucinic, M., Selander, G., Mattsson, J., and D. Garcia-
               Carillo, "Requirements for a Lightweight AKE for OSCORE",
-              Work in Progress, Internet-Draft, draft-ietf-lake-reqs-01,
-              19 February 2020, <http://www.ietf.org/internet-drafts/
-              draft-ietf-lake-reqs-01.txt>.
+              Work in Progress, Internet-Draft, draft-ietf-lake-reqs-04,
+              8 June 2020, <http://www.ietf.org/internet-drafts/draft-
+              ietf-lake-reqs-04.txt>.
 
    [RFC7228]  Bormann, C., Ersue, M., and A. Keranen, "Terminology for
               Constrained-Node Networks", RFC 7228,
@@ -277,9 +277,9 @@ Internet-Draft    CBOR Certificate Compression for COSE       March 2020
 
 
 
-Preuss Mattsson, et al. Expires 9 September 2020                [Page 5]
+Preuss Mattsson, et al.  Expires 8 January 2021                 [Page 5]
 
-Internet-Draft    CBOR Certificate Compression for COSE       March 2020
+Internet-Draft    CBOR Certificate Compression for COSE        July 2020
 
 
 Acknowledgments
@@ -333,4 +333,4 @@ Authors' Addresses
 
 
 
-Preuss Mattsson, et al. Expires 9 September 2020                [Page 6]
+Preuss Mattsson, et al.  Expires 8 January 2021                 [Page 6]

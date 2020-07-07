@@ -5,12 +5,12 @@
 ACE Working Group                                                S. Raza
 Internet-Draft                                                J. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 9 September 2020                                    G. Selander
+Expires: 8 January 2021                                      G. Selander
                                                              J. Mattsson
                                                              Ericsson AB
                                                               M. Furuhed
                                                              Nexus Group
-                                                            8 March 2020
+                                                             7 July 2020
 
 
                    CBOR Profile of X.509 Certificates
@@ -44,7 +44,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 September 2020.
+   This Internet-Draft will expire on 8 January 2021.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Raza, et al.            Expires 9 September 2020                [Page 1]
+Raza, et al.             Expires 8 January 2021                 [Page 1]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Raza, et al.            Expires 9 September 2020                [Page 2]
+Raza, et al.             Expires 8 January 2021                 [Page 2]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
    CBOR is a data format designed for small code size and small message
@@ -165,9 +165,9 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
 
 
 
-Raza, et al.            Expires 9 September 2020                [Page 3]
+Raza, et al.             Expires 8 January 2021                 [Page 3]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
 3.  CBOR Encoding
@@ -216,16 +216,18 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
       a CBOR byte string of length 6.  Other EUI-64 is ncoded as a CBOR
       byte string of length 8.  A FQDN is encoded as a CBOR text string.
 
+
+
+
+
+
+Raza, et al.             Expires 8 January 2021                 [Page 4]
+
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
+
+
    *  subjectPublicKeyInfo.  If the 'algorithm' field is the default
       (id-ecPublicKey and prime256v1), it is omitted in the CBOR
-
-
-
-Raza, et al.            Expires 9 September 2020                [Page 4]
-
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
-
-
       encoding., otherwise it is included in the
       subjectPublicKeyInfo_algorithm field encoded as a int, (see
       Section 9).  The 'subjectPublicKey' is encoded as as a CBOR byte
@@ -275,11 +277,9 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
 
 
 
-
-
-Raza, et al.            Expires 9 September 2020                [Page 5]
+Raza, et al.             Expires 8 January 2021                 [Page 5]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
    *  type.  A CBOR int used to indicate the type of CBOR certificate.
@@ -319,7 +319,8 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
    )
 
    TODO - Specify exactly how issuer is encoded into a map / text and
-   back again.
+   back again.  This is a compromise between compactness and complete
+   generality.
 
 4.  Deployment settings
 
@@ -328,16 +329,17 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
    certificate is used to recreate the original X.509 data structure to
    be able to verify the signature.
 
+
+
+
+
+Raza, et al.             Expires 8 January 2021                 [Page 6]
+
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
+
+
    For the currently used DTLS v1.2 protocol, where the handshake is
    sent unencrypted, the actual encoding and compression can be done at
-
-
-
-Raza, et al.            Expires 9 September 2020                [Page 6]
-
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
-
-
    different locations depending on the deployment setting.  For
    example, the mapping between CBOR certificate and standard X.509
    certificate can take place in a 6LoWPAN border gateway which allows
@@ -387,11 +389,9 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
 
 
 
-
-
-Raza, et al.            Expires 9 September 2020                [Page 7]
+Raza, et al.             Expires 8 January 2021                 [Page 7]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
 6.  Native CBOR Certificates
@@ -445,9 +445,9 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
 
 
 
-Raza, et al.            Expires 9 September 2020                [Page 8]
+Raza, et al.             Expires 8 January 2021                 [Page 8]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
 9.1.  CBOR Certificate Types Registry
@@ -501,9 +501,9 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
 
 
 
-Raza, et al.            Expires 9 September 2020                [Page 9]
+Raza, et al.             Expires 8 January 2021                 [Page 9]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
    +-------+---------------------------------------+-------------------+
@@ -557,9 +557,9 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
 
 
 
-Raza, et al.            Expires 9 September 2020               [Page 10]
+Raza, et al.             Expires 8 January 2021                [Page 10]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
    [RFC8610]  Birkholz, H., Vigano, C., and C. Bormann, "Concise Data
@@ -574,8 +574,8 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
               Rescorla, E., Tschofenig, H., and N. Modadugu, "The
               Datagram Transport Layer Security (DTLS) Protocol Version
               1.3", Work in Progress, Internet-Draft, draft-ietf-tls-
-              dtls13-35, 7 March 2020, <http://www.ietf.org/internet-
-              drafts/draft-ietf-tls-dtls13-35.txt>.
+              dtls13-38, 29 May 2020, <http://www.ietf.org/internet-
+              drafts/draft-ietf-tls-dtls13-38.txt>.
 
    [I-D.selander-ace-cose-ecdhe]
               Selander, G., Mattsson, J., and F. Palombini, "Ephemeral
@@ -613,9 +613,9 @@ Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
 
 
 
-Raza, et al.            Expires 9 September 2020               [Page 11]
+Raza, et al.             Expires 8 January 2021                [Page 11]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
 Appendix A.  Example CBOR Certificates
@@ -669,9 +669,9 @@ A.1.  Example X.509 Certificate
 
 
 
-Raza, et al.            Expires 9 September 2020               [Page 12]
+Raza, et al.             Expires 8 January 2021                [Page 12]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
 A.2.  Example CBOR Certificate Compression
@@ -725,9 +725,9 @@ A.3.  Example Native CBOR Certificate
 
 
 
-Raza, et al.            Expires 9 September 2020               [Page 13]
+Raza, et al.             Expires 8 January 2021                [Page 13]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
    The CBOR encoding (CBOR sequence) of the CBOR certificate is 136
@@ -781,9 +781,9 @@ Appendix B.  X.509 Certificate Profile, ASN.1
 
 
 
-Raza, et al.            Expires 9 September 2020               [Page 14]
+Raza, et al.             Expires 8 January 2021                [Page 14]
 
-Internet-Draft     CBOR Profile of X.509 Certificates         March 2020
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
    AlgorithmIdentifier  ::=  SEQUENCE  {
@@ -837,4 +837,4 @@ Authors' Addresses
 
 
 
-Raza, et al.            Expires 9 September 2020               [Page 15]
+Raza, et al.             Expires 8 January 2021                [Page 15]
