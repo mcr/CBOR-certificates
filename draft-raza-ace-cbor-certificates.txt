@@ -29,6 +29,9 @@ Abstract
    standard, enabling the use of profiled and compressed X.509
    certificates without modifications in the existing X.509 standard.
 
+   Note: This draft has been merged into draft-mattsson-cose-cbor-cert-
+   compress-01 and will not be updated more
+
 Status of This Memo
 
    This Internet-Draft is submitted in full conformance with the
@@ -46,10 +49,7 @@ Status of This Memo
 
    This Internet-Draft will expire on 10 January 2021.
 
-Copyright Notice
 
-   Copyright (c) 2020 IETF Trust and the persons identified as the
-   document authors.  All rights reserved.
 
 
 
@@ -57,6 +57,11 @@ Raza, et al.             Expires 10 January 2021                [Page 1]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
+
+Copyright Notice
+
+   Copyright (c) 2020 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents (https://trustee.ietf.org/
@@ -101,11 +106,6 @@ Table of Contents
    usage of X.509 certificates, keeping X.509 compatibility is necessary
    at least for a transition period.  However, the use of a more compact
    encoding with the Concise Binary Object Representation (CBOR)
-   [RFC7049] reduces the certificate size significantly which has known
-   performance benefits in terms of decreased communication overhead,
-   power consumption, latency, storage, etc.
-
-
 
 
 
@@ -113,6 +113,10 @@ Raza, et al.             Expires 10 January 2021                [Page 2]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
+
+   [RFC7049] reduces the certificate size significantly which has known
+   performance benefits in terms of decreased communication overhead,
+   power consumption, latency, storage, etc.
 
    CBOR is a data format designed for small code size and small message
    size.  CBOR builds on the JSON data model but extends it by e.g.
@@ -158,10 +162,6 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
    capitals, as shown here.
 
    This specification makes use of the terminology in [RFC7228].
-
-
-
-
 
 
 
