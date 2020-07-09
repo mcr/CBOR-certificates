@@ -139,12 +139,12 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
    The encoding retains backwards compatibility with X.509, and can be
    applied for lightweight certificate based authentication with e.g.
    TLS [RFC8446], DTLS [I-D.ietf-tls-dtls13], COSE [RFC8152], or EDHOC
-   [I-D.selander-ace-cose-ecdhe].  The same profile can be used for
-   "native" CBOR encoded certificates, which further optimizes the
-   performance in constrained environments but are not backwards
-   compatible with X.509, see Section 6.  Other work has looked at
-   reducing size of X.509 certificates.  The purpose of this document is
-   to stimulate a discussion on CBOR based certificates.
+   [I-D.ietf-lake-edhoc].  The same profile can be used for "native"
+   CBOR encoded certificates, which further optimizes the performance in
+   constrained environments but are not backwards compatible with X.509,
+   see Section 6.  Other work has looked at reducing size of X.509
+   certificates.  The purpose of this document is to stimulate a
+   discussion on CBOR based certificates.
 
    This document specifies COSE headers for use of the CBOR certificate
    compression algorithm for use with COSE.  The document also specifies
@@ -173,18 +173,20 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 3.  CBOR Encoding
 
    This section specifies the content and encoding for CBOR
-   certificates.  The CBOR certificate can be a native CBOR certificate,
-   in which case the signature is calculated on the CBOR encoded data,
-   or a CBOR compressed X.509 certificates in which case the signature
-   is calculated on the DER encoded ASN.1 data in the X.509 certificate.
-   In both cases the certificate content is adhering to the restrictions
-   given by [RFC7925].  The corresponding ASN.1 schema is given in
-   Appendix A.
+   certificates, with the overall objective to produce a very compact
+   representation of the certificate profile defined in [RFC7925].  The
+   CBOR certificate can be a CBOR compressed X.509 certificate, in which
+   case the signature is calculated on the DER encoded ASN.1 data in the
+   X.509 certificate, or a native CBOR certificate, in which case the
+   signature is calculated directly on the CBOR encoded data (see
+   Section 6).  In both cases the certificate content is adhering to the
+   restrictions given by [RFC7925].  The corresponding ASN.1 schema is
+   given in Appendix A.
 
    The encoding and compression has several components including: ASN.1
    DER and base64 encoding are replaced with CBOR encoding, static
    fields are elided, and elliptic curve points are compressed.  The
-   X.509 fields and there CBOR encodings are listed below.  Combining
+   X.509 fields and their CBOR encodings are listed below.  Combining
    these different components reduces the certificate size
    significantly, something that is not possible with general purpose
    compressions algorithms, see Figure 1.
@@ -208,16 +210,14 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
    *  validity.  The 'notBefore' and 'notAfter' UTCTime fields are ASCII
       string of the form "yymmddHHMMSSZ".  They are encoded as the
-      unsigned integers using the following inversiable encoding.  The
+      unsigned integers using the following invertible encoding.  The
       resulting integer always fit in a 32 bit usigned integer.
 
       SS + 60 * (MM + 60 * (HH + 24 * (dd + 32 * (mm + 13 * yy))))
 
-
-
-
-
-
+   *  subject.  The 'subject' field is restricted to specifying the
+      value of the common name.  By RFC 7925 an IoT subject is
+      identified by either an EUI-64 for clients, or by a FQDN for
 
 
 
@@ -226,9 +226,6 @@ Raza, et al.             Expires 10 January 2021                [Page 4]
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
-   *  subject.  The 'subject' field is restricted to specifying the
-      value of the common name.  By RFC 7925 an IoT subject is
-      identified by either an EUI-64 for clients, or by a FQDN for
       servers.  An EUI-64 mapped from a 48-bit MAC address is encoded as
       a CBOR byte string of length 6.  Other EUI-64 is ncoded as a CBOR
       byte string of length 8.  A FQDN is encoded as a CBOR text string.
@@ -271,6 +268,9 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
       default (ecdsa-with-SHA256) it is omitted in the CBOR encoding,
       otherwise it is included in the signatureAlgorithm field encoded
       as an CBOR int (see Section 8).
+
+
+
 
 
 
@@ -367,7 +367,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
    end, through adding the encoding/decoding functionality to the
    server.  This corresponds to the proposed native mode, a new
    certificate compression scheme.  The required changes on the server
-   side are in line with recent protocols utilizing cbor encoding for
+   side are in line with recent protocols utilizing CBOR encoding for
    communication with resource constrained devices [RFC8613].
 
 5.  Expected Certificate Sizes
@@ -416,7 +416,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
    deployments.  The mapping between X.509 and CBOR certificates enables
    a migration path between the backwards compatible format and the
    fully optimized format.  This motivates introducing a type flag to
-   indicate if the certificate should be restored to X.509 or kept cbor
+   indicate if the certificate should be restored to X.509 or kept CBOR
    encoded.
 
 7.  Security Considerations
@@ -645,19 +645,19 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
               emu-eaptlscert-05, 15 June 2020, <http://www.ietf.org/
               internet-drafts/draft-ietf-emu-eaptlscert-05.txt>.
 
+   [I-D.ietf-lake-edhoc]
+              Selander, G., Mattsson, J., and F. Palombini, "Ephemeral
+              Diffie-Hellman Over COSE (EDHOC)", Work in Progress,
+              Internet-Draft, draft-ietf-lake-edhoc-00, 6 July 2020,
+              <http://www.ietf.org/internet-drafts/draft-ietf-lake-
+              edhoc-00.txt>.
+
    [I-D.ietf-lake-reqs]
               Vucinic, M., Selander, G., Mattsson, J., and D. Garcia-
               Carillo, "Requirements for a Lightweight AKE for OSCORE",
               Work in Progress, Internet-Draft, draft-ietf-lake-reqs-04,
               8 June 2020, <http://www.ietf.org/internet-drafts/draft-
               ietf-lake-reqs-04.txt>.
-
-   [I-D.selander-ace-cose-ecdhe]
-              Selander, G., Mattsson, J., and F. Palombini, "Ephemeral
-              Diffie-Hellman Over COSE (EDHOC)", Work in Progress,
-              Internet-Draft, draft-selander-ace-cose-ecdhe-14, 11
-              September 2019, <http://www.ietf.org/internet-drafts/
-              draft-selander-ace-cose-ecdhe-14.txt>.
 
    [RFC7228]  Bormann, C., Ersue, M., and A. Keranen, "Terminology for
               Constrained-Node Networks", RFC 7228,
@@ -695,7 +695,7 @@ Appendix A.  Example CBOR Certificates
 
 A.1.  Example X.509 Certificate
 
-   Example RFC 7925 profiled X.509 certificate parsed with OpenSSL
+   Example of RFC 7925 profiled X.509 certificate parsed with OpenSSL.
 
 
 
@@ -760,7 +760,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
             02:20:3a:d9:35:3b:a7:88:68:3b:06:bb:48:fe:ca:16:ea:71:
             17:17:34:c6:75:c5:33:2b:2a:f1:cb:73:38:10:a1:fc
 
-   The DER encoding of the above certificate is 314 bytes
+   The DER encoding of the above certificate is 314 bytes.
 
    308201363081DEA003020102020301F50D300A06082A8648CE3D040302301631
    14301206035504030C0B5246432074657374204341301E170D32303031303130
@@ -776,7 +776,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 A.2.  Example CBOR Certificate Compression
 
    The CBOR certificate compression of the X.509 in CBOR diagnostic
-   format is
+   format is:
 
 
 
@@ -802,7 +802,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
    )
 
    The CBOR encoding (CBOR sequence) of the CBOR certificate is 136
-   bytes
+   bytes.
 
    01431282696B52464320746573742043411A5E0BE1001A601896004601234567
    89AB582102AE4CDB01F614DEFC7121285FDC7F5C6D1D42C95647F061BA0080DF
@@ -812,8 +812,8 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 A.3.  Example Native CBOR Certificate
 
-   The corresponfing native CBOR certificate in CBOR diagnostic format
-   is equal execpt for type and signatureValue
+   The corresponding native CBOR certificate in CBOR diagnostic format
+   is identical except for type and signatureValue.
 
    (
      0,
@@ -831,7 +831,7 @@ A.3.  Example Native CBOR Certificate
    )
 
    The CBOR encoding (CBOR sequence) of the CBOR certificate is 136
-   bytes
+   bytes.
 
 
 
