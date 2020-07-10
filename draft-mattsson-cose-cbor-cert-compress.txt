@@ -198,7 +198,8 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
       omitted in the CBOR encoding.
 
    *  serialNumber.  The 'serialNumber' field is encoded as a CBOR byte
-      string.
+      string.  This allows encoding of all lengths with minimal
+      overhead.
 
    *  signature.  The 'signature' field is always the same as the
       'signatureAlgorithm' field and always omitted from the CBOR
@@ -215,9 +216,8 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
       SS + 60 * (MM + 60 * (HH + 24 * (dd + 32 * (mm + 13 * yy))))
 
-   *  subject.  The 'subject' field is restricted to specifying the
-      value of the common name.  By RFC 7925 an IoT subject is
-      identified by either an EUI-64 for clients, or by a FQDN for
+
+
 
 
 
@@ -226,6 +226,9 @@ Raza, et al.             Expires 11 January 2021                [Page 4]
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
+   *  subject.  The 'subject' field is restricted to specifying the
+      value of the common name.  By RFC 7925 an IoT subject is
+      identified by either an EUI-64 for clients, or by a FQDN for
       servers.  An EUI-64 mapped from a 48-bit MAC address is encoded as
       a CBOR byte string of length 6.  Other EUI-64 is ncoded as a CBOR
       byte string of length 8.  A FQDN is encoded as a CBOR text string.
@@ -268,9 +271,6 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
       default (ecdsa-with-SHA256) it is omitted in the CBOR encoding,
       otherwise it is included in the signatureAlgorithm field encoded
       as an CBOR int (see Section 8).
-
-
-
 
 
 
