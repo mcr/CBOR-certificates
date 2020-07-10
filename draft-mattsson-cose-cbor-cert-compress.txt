@@ -532,7 +532,9 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
    This document registers the following entries in the "COSE Header
    Parameters" registry under the "CBOR Object Signing and Encryption
-   (COSE)" heading.
+   (COSE)" heading.  The formatting and processing are the same as the
+   corresponding x5chain and x5u defined in [I-D.ietf-cose-x509] except
+   that the certificates are CBOR encoded instead of DER encoded.
 
    +-----------+-------+----------------+---------------------+
    | Name      | Label | Value Type     | Description         |
@@ -549,8 +551,6 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
    This document registers the following entry in the "Certificate
    Compression Algorithm IDs" registry under the "Transport Layer
    Security (TLS) Extensions" heading.
-
-
 
 
 
