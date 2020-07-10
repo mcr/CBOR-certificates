@@ -216,8 +216,8 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
       n = SS + 60 * (MM + 60 * (HH + 24 * (dd + 32 * (mm + 13 * yy))))
 
-   Decoding can be done by a succession of modulo and substraction
-   operations.  I.e.  SS = n mod 60, MM = (n - SS) mod 60, etc.
+      Decoding can be done by a succession of modulo and substraction
+      operations.  I.e.  SS = n mod 60, MM = (n - SS) mod 60, etc.
 
 
 
