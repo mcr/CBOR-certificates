@@ -212,12 +212,12 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
    *  validity.  The 'notBefore' and 'notAfter' UTCTime fields are ASCII
       string of the form "yymmddHHMMSSZ".  They are encoded as the
       unsigned integers using the following invertible encoding.  The
-      resulting integer always fit in a 32 bit usigned integer.
+      resulting integer n always fit in a 32 bit usigned integer.
 
-      SS + 60 * (MM + 60 * (HH + 24 * (dd + 32 * (mm + 13 * yy))))
+      n = SS + 60 * (MM + 60 * (HH + 24 * (dd + 32 * (mm + 13 * yy))))
 
-
-
+   Decoding can be done by a succession of modulo and substraction
+   operations.  I.e.  SS = n mod 60, MM = (n - SS) mod 60, etc.
 
 
 
