@@ -246,7 +246,8 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
       as defined in Section 2.3.3 of [SECG].
 
    *  extensions.  The 'extensions' field is encoded as a CBOR array
-      where each extension is represented with an int.  The extensions
+      where each extension is represented with an int.  This is the most
+      compact representation of the allowed extensions.  The extensions
       mandated to be supported by RFC 7925 is encodeded as specified
       below, where a critical extensions are encoded with a negative
       sign.  TODO: need to make things mod 3 instead.
@@ -270,7 +271,6 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
       extKeyUsage = 10 + id-kp-serverAuth + 2 * id-kp-clientAuth
                   + 4 * id-kp-codeSigning + 8 * id-kp-OCSPSigning
-
 
 
 
