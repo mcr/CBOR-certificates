@@ -296,7 +296,9 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
       Currently type can be a native CBOR certificate (type = 0) or a
       CBOR compressed X.509 certificates (type = 1), see Section 8.
 
-   The Concise Data Definition Language (CDDL) for CBOR certificate is:
+   The following Concise Data Definition Language (CDDL) defines a
+   group, the elements of which are to be used in an unadorned CBOR
+   Sequence [RFC8742].
 
    certificate = (
       type : int,
@@ -328,8 +330,6 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
           subjectPublicKeyInfo_algorithm : int )
    )
 
-   TODO - Specify exactly how issuer is encoded into a map / text and
-   back again.
 
 
 
@@ -337,6 +337,9 @@ Raza, et al.             Expires 11 January 2021                [Page 6]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
+
+   TODO - Specify exactly how issuer is encoded into a map / text and
+   back again.
 
 4.  Deployment settings
 
@@ -381,9 +384,6 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
    number was calculated with zlib-flate.
 
    zlib-flate -compress < cert.der > cert.compressed
-
-
-
 
 
 
