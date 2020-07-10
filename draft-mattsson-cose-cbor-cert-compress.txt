@@ -339,7 +339,8 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
    TODO - Specify exactly how issuer is encoded into a map / text and
-   back again.
+   back again.  This is a compromise between compactness and complete
+   generality.
 
 4.  Deployment settings
 
@@ -384,7 +385,6 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
    number was calculated with zlib-flate.
 
    zlib-flate -compress < cert.der > cert.compressed
-
 
 
 
