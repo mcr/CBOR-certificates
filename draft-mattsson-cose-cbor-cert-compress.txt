@@ -382,10 +382,10 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
    For protocols like IKEv2, TLS/DTLS 1.3, and EDHOC, where certificates
    are encrypted, the proposed encoding needs to be done fully end-to-
    end, through adding the encoding/decoding functionality to the
-   server.  This corresponds to the proposed native mode, a new
-   certificate compression scheme.  The required changes on the server
-   side are in line with recent protocols utilizing CBOR encoding for
-   communication with resource constrained devices [RFC8613].
+   server.
+
+
+
 
 
 
