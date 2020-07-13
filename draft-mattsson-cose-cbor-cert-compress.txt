@@ -5,12 +5,12 @@
 Network Working Group                                            S. Raza
 Internet-Draft                                                J. Höglund
 Intended status: Standards Track                                 RISE AB
-Expires: 13 January 2021                                     G. Selander
+Expires: 14 January 2021                                     G. Selander
                                                              J. Mattsson
                                                              Ericsson AB
                                                               M. Furuhed
                                                              Nexus Group
-                                                            12 July 2020
+                                                            13 July 2020
 
 
                    CBOR Profile of X.509 Certificates
@@ -41,7 +41,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 January 2021.
+   This Internet-Draft will expire on 14 January 2021.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Raza, et al.             Expires 13 January 2021                [Page 1]
+Raza, et al.             Expires 14 January 2021                [Page 1]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Raza, et al.             Expires 13 January 2021                [Page 2]
+Raza, et al.             Expires 14 January 2021                [Page 2]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -165,7 +165,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
 
-Raza, et al.             Expires 13 January 2021                [Page 3]
+Raza, et al.             Expires 14 January 2021                [Page 3]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -221,7 +221,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
 
-Raza, et al.             Expires 13 January 2021                [Page 4]
+Raza, et al.             Expires 14 January 2021                [Page 4]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -242,13 +242,13 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
       value of the common name.  By RFC 7925 an IoT subject is
       identified by either an EUI-64 for clients, or by a FQDN for
       servers.  An EUI-64 mapped from a 48-bit MAC address is encoded as
-      a CBOR byte string of length 6.  Other EUI-64 is ncoded as a CBOR
+      a CBOR byte string of length 6.  Other EUI-64 is encoded as a CBOR
       byte string of length 8.  A FQDN is encoded as a CBOR text string.
 
    *  subjectPublicKeyInfo.  If the 'algorithm' field is the default
       (id-ecPublicKey and prime256v1), it is omitted in the CBOR
-      encoding., otherwise it is included in the
-      subjectPublicKeyInfo_algorithm field encoded as a int, (see
+      encoding, otherwise it is included in the
+      subjectPublicKeyInfo_algorithm field encoded as an int, (see
       Section 8).  The 'subjectPublicKey' is encoded as a CBOR byte
       string.  Public keys of type id-ecPublicKey are point compressed
       as defined in Section 2.3.3 of [SECG].
@@ -257,8 +257,8 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
       where each extension is represented with an int.  This is the most
       compact representation of the allowed extensions.  The extensions
       mandated to be supported by RFC 7925 is encodeded as specified
-      below, where a critical extensions are encoded with a negative
-      sign.  TODO: need to make things mod 3 instead.
+      below, where critical extensions are encoded with a negative sign.
+      TODO: need to make things mod 3 instead.
 
       I.e. non-critical keyUsage keyAgreement is encoded as 5, critical
       basicConstraints cA is encodes as -3, and non-criticical
@@ -277,7 +277,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
 
-Raza, et al.             Expires 13 January 2021                [Page 5]
+Raza, et al.             Expires 14 January 2021                [Page 5]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -333,7 +333,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
 
-Raza, et al.             Expires 13 January 2021                [Page 6]
+Raza, et al.             Expires 14 January 2021                [Page 6]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -389,7 +389,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
 
-Raza, et al.             Expires 13 January 2021                [Page 7]
+Raza, et al.             Expires 14 January 2021                [Page 7]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -445,7 +445,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
 
-Raza, et al.             Expires 13 January 2021                [Page 8]
+Raza, et al.             Expires 14 January 2021                [Page 8]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -501,7 +501,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
 
-Raza, et al.             Expires 13 January 2021                [Page 9]
+Raza, et al.             Expires 14 January 2021                [Page 9]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -557,7 +557,7 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 
 
-Raza, et al.             Expires 13 January 2021               [Page 10]
+Raza, et al.             Expires 14 January 2021               [Page 10]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -588,13 +588,6 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 9.1.  Normative References
 
-   [I-D.ietf-cose-x509]
-              Schaad, J., "CBOR Object Signing and Encryption (COSE):
-              Header parameters for carrying and referencing X.509
-              certificates", Work in Progress, Internet-Draft, draft-
-              ietf-cose-x509-06, 9 March 2020, <http://www.ietf.org/
-              internet-drafts/draft-ietf-cose-x509-06.txt>.
-
    [I-D.ietf-tls-certificate-compression]
               Ghedini, A. and V. Vasiliev, "TLS Certificate
               Compression", Work in Progress, Internet-Draft, draft-
@@ -609,19 +602,21 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
               dtls13-38, 29 May 2020, <http://www.ietf.org/internet-
               drafts/draft-ietf-tls-dtls13-38.txt>.
 
-
-
-
-
-Raza, et al.             Expires 13 January 2021               [Page 11]
-
-Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
-
-
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
+
+
+
+
+
+
+
+Raza, et al.             Expires 14 January 2021               [Page 11]
+
+Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
+
 
    [RFC5280]  Cooper, D., Santesson, S., Farrell, S., Boeyen, S.,
               Housley, R., and W. Polk, "Internet X.509 Public Key
@@ -663,20 +658,21 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
 9.2.  Informative References
 
-   [I-D.ietf-emu-eaptlscert]
-              Sethi, M., Mattsson, J., and S. Turner, "Handling Large
-              Certificates and Long Certificate Chains in TLS-based EAP
+   [I-D.ietf-cose-x509]
+              Schaad, J., "CBOR Object Signing and Encryption (COSE):
+              Header parameters for carrying and referencing X.509
+              certificates", Work in Progress, Internet-Draft, draft-
+              ietf-cose-x509-06, 9 March 2020, <http://www.ietf.org/
+              internet-drafts/draft-ietf-cose-x509-06.txt>.
 
 
 
-Raza, et al.             Expires 13 January 2021               [Page 12]
+
+
+Raza, et al.             Expires 14 January 2021               [Page 12]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
-
-              Methods", Work in Progress, Internet-Draft, draft-ietf-
-              emu-eaptlscert-05, 15 June 2020, <http://www.ietf.org/
-              internet-drafts/draft-ietf-emu-eaptlscert-05.txt>.
 
    [I-D.ietf-lake-edhoc]
               Selander, G., Mattsson, J., and F. Palombini, "Ephemeral
@@ -685,22 +681,10 @@ Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
               <http://www.ietf.org/internet-drafts/draft-ietf-lake-
               edhoc-00.txt>.
 
-   [I-D.ietf-lake-reqs]
-              Vucinic, M., Selander, G., Mattsson, J., and D. Garcia-
-              Carillo, "Requirements for a Lightweight AKE for OSCORE",
-              Work in Progress, Internet-Draft, draft-ietf-lake-reqs-04,
-              8 June 2020, <http://www.ietf.org/internet-drafts/draft-
-              ietf-lake-reqs-04.txt>.
-
    [RFC7228]  Bormann, C., Ersue, M., and A. Keranen, "Terminology for
               Constrained-Node Networks", RFC 7228,
               DOI 10.17487/RFC7228, May 2014,
               <https://www.rfc-editor.org/info/rfc7228>.
-
-   [RFC8613]  Selander, G., Mattsson, J., Palombini, F., and L. Seitz,
-              "Object Security for Constrained RESTful Environments
-              (OSCORE)", RFC 8613, DOI 10.17487/RFC8613, July 2019,
-              <https://www.rfc-editor.org/info/rfc8613>.
 
    [SECG]     "Elliptic Curve Cryptography, Standards for Efficient
               Cryptography Group, ver. 2", 2009,
@@ -725,7 +709,23 @@ A.1.  Example X.509 Certificate
 
 
 
-Raza, et al.             Expires 13 January 2021               [Page 13]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Raza, et al.             Expires 14 January 2021               [Page 13]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -781,7 +781,7 @@ A.2.  Example CBOR Certificate Compression
 
 
 
-Raza, et al.             Expires 13 January 2021               [Page 14]
+Raza, et al.             Expires 14 January 2021               [Page 14]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -837,7 +837,7 @@ A.3.  Example Native CBOR Certificate
 
 
 
-Raza, et al.             Expires 13 January 2021               [Page 15]
+Raza, et al.             Expires 14 January 2021               [Page 15]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -893,7 +893,7 @@ Appendix B.  X.509 Certificate Profile, ASN.1
 
 
 
-Raza, et al.             Expires 13 January 2021               [Page 16]
+Raza, et al.             Expires 14 January 2021               [Page 16]
 
 Internet-Draft     CBOR Profile of X.509 Certificates          July 2020
 
@@ -949,4 +949,4 @@ Authors' Addresses
 
 
 
-Raza, et al.             Expires 13 January 2021               [Page 17]
+Raza, et al.             Expires 14 January 2021               [Page 17]
