@@ -218,7 +218,7 @@ Extension = ( extensionID: int, extensionValue: any ) //
 {: #fig-CBORCertCDDL title="CDDL for CBORCertificate."}
 {: artwork-align="center"}
 
-## Encoding of subjectPublicKey and issuerSingatureValue {#alg-encoding}
+## Encoding of subjectPublicKey and issuerSignatureValue {#alg-encoding}
 
 ### Encoding of subjectPublicKey
 
