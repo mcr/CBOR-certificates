@@ -39,7 +39,7 @@ author:
         org: Nexus Group
         email: martin.furuhed@nexusgroup.com
 
-        
+
 normative:
 
   RFC2119:
@@ -49,7 +49,7 @@ normative:
   RFC8174:
   RFC8610:
   RFC8742:
-  RFC8949: 
+  RFC8949:
   I-D.ietf-cose-x509:
   I-D.ietf-cbor-tags-oid:
 
@@ -57,7 +57,7 @@ normative:
     title: Elliptic Curve Cryptography, Standards for Efficient Cryptography Group, ver. 2
     target: https://secg.org/sec1-v2.pdf
     date: 2009
-    
+
 informative:
 
   RFC7228:
@@ -122,11 +122,11 @@ CBOR is a data format designed for small code size and small message size. CBOR 
 
 CBOR data items are encoded to or decoded from byte strings using a type-length-value encoding scheme, where the three highest order bits of the initial byte contain information about the major type. CBOR supports several different types of data items, in addition to integers (int, uint), simple values (e.g. null), byte strings (bstr), and text strings (tstr), CBOR also supports arrays \[\] of data items, maps \{\} of pairs of data items, and sequences of data items. For a complete specification and examples, see {{RFC8949}}, {{RFC8610}}, and {{RFC8742}}.
 
-CAB Baseline Requirements {{CAB-Baseline}}, RFC 7925 {{RFC7925}}, IEEE 802.1AR {{IEEE-802.1AR}}, and CNSA {{RFC8603}} specify certificate profiles which can be applied to certificate based authentication with, e.g., TLS {{RFC8446}}, QUIC {{I-D.ietf-quic-transport}}, DTLS {{I-D.ietf-tls-dtls13}}, COSE {{RFC8152}}, EDHOC {{I-D.ietf-lake-edhoc}}, or Compact TLS 1.3 {{I-D.ietf-tls-ctls}}. RFC 7925 {{RFC7925}}, RFC7925bis {{I-D.ietf-uta-tls13-iot-profile}}, and IEEE 802.1AR {{IEEE-802.1AR}} specifically target Internet of Things deployments. This document specifies a CBOR encoding based on {{X.509-IoT}}, which can support large parts of {{RFC5280}}. The encoding support all {{RFC7925}} and IEEE 802.1AR {{IEEE-802.1AR}} and CAB Baseline {{CAB-Baseline}} profiled X.509 certificates. Two variants are defined using the same CBOR encoding and differing only in what is being signed: 
+CAB Baseline Requirements {{CAB-Baseline}}, RFC 7925 {{RFC7925}}, IEEE 802.1AR {{IEEE-802.1AR}}, and CNSA {{RFC8603}} specify certificate profiles which can be applied to certificate based authentication with, e.g., TLS {{RFC8446}}, QUIC {{I-D.ietf-quic-transport}}, DTLS {{I-D.ietf-tls-dtls13}}, COSE {{RFC8152}}, EDHOC {{I-D.ietf-lake-edhoc}}, or Compact TLS 1.3 {{I-D.ietf-tls-ctls}}. RFC 7925 {{RFC7925}}, RFC7925bis {{I-D.ietf-uta-tls13-iot-profile}}, and IEEE 802.1AR {{IEEE-802.1AR}} specifically target Internet of Things deployments. This document specifies a CBOR encoding based on {{X.509-IoT}}, which can support large parts of {{RFC5280}}. The encoding support all {{RFC7925}} and IEEE 802.1AR {{IEEE-802.1AR}} and CAB Baseline {{CAB-Baseline}} profiled X.509 certificates. Two variants are defined using the same CBOR encoding and differing only in what is being signed:
 
 * An invertible CBOR re-encoding of DER encoded X.509 certificates {{RFC5280}}, which can be reversed to obtain the original DER encoded X.509 certificate.
 
-* Natively signed CBOR certificates, which further optimizes the performance in constrained environments but is not backwards compatible with {{RFC5280}}, see {{native-CBOR}}. 
+* Natively signed CBOR certificates, which further optimizes the performance in constrained environments but is not backwards compatible with {{RFC5280}}, see {{native-CBOR}}.
 
 This document specifies COSE headers for use of the CBOR certificates with COSE, see {{cose}}. The document also specifies a TLS certificate type for use of the CBOR certificates with TLS and QUIC (with or without additional TLS certificate compression), see {{tls}}.
 
@@ -138,15 +138,15 @@ This specification makes use of the terminology in {{RFC5280}}, {{RFC7228}}, {{R
 
 # CBOR Encoding {#encoding}
 
-This section specifies the content and encoding for CBOR certificates, with the overall objective to produce a very compact representation supporting large parts of {{RFC5280}}, and everything in {{RFC7925}}, {{IEEE-802.1AR}}, and CAB Baseline {{CAB-Baseline}}. In the CBOR encoding, static fields are elided, elliptic curve points and time values are compressed, OID are replaced with short integers, and redundant encoding is removed. Combining these different components reduces the certificate size significantly, which is not possible with general purpose compressions algorithms, see {{fig-table}}. 
+This section specifies the content and encoding for CBOR certificates, with the overall objective to produce a very compact representation supporting large parts of {{RFC5280}}, and everything in {{RFC7925}}, {{IEEE-802.1AR}}, and CAB Baseline {{CAB-Baseline}}. In the CBOR encoding, static fields are elided, elliptic curve points and time values are compressed, OID are replaced with short integers, and redundant encoding is removed. Combining these different components reduces the certificate size significantly, which is not possible with general purpose compressions algorithms, see {{fig-table}}.
 
 The CBOR certificate can be either a CBOR re-encoding of a DER encoded X.509 certificate, in which case the signature is calculated on the DER encoded ASN.1 data in the X.509 certificate, or a natively signed CBOR certificate, in which case the signature is calculated directly on the CBOR encoded data (see {{native-CBOR}}). In both cases the certificate content is adhering to the restrictions given by {{RFC5280}}. The re-encoding is known to work with DER encoded certificates but might work with other canonical encodings. The re-encoding does not work for BER encoded certificates.
 
-In the encoding described below, the order of elements in arrays are always encoded in the same order as the elements or the corresponding SEQUENCE or SET in the DER encoding. 
+In the encoding described below, the order of elements in arrays are always encoded in the same order as the elements or the corresponding SEQUENCE or SET in the DER encoding.
 
 ## Message Fields
 
-The X.509 fields and their CBOR encodings are listed below, and used in the definition of CBOR Certificates, see {{fig-CBORCertCDDL}}. 
+The X.509 fields and their CBOR encodings are listed below, and used in the definition of CBOR Certificates, see {{fig-CBORCertCDDL}}.
 
 CBOR certificates are defined in terms of DER encoded {{RFC5280}} X.509 certificates:
 
@@ -171,7 +171,7 @@ CBOR certificates are defined in terms of DER encoded {{RFC5280}} X.509 certific
 * extensions. The 'extensions' field is encoded as a CBOR array where each extension is encoded as either a CBOR int (see {{extype}}) followed by an optional CBOR item of any type or an unwrapped CBOR OID tag {{I-D.ietf-cbor-tags-oid}} followed by a CBOR bool encoding 'critical' and the DER encoded value of the 'extnValue' encoded as a CBOR byte string. If the array contains exactly two ints and the absolute value of the first int is 2, the array is omitted and the extensions is encoded as a single CBOR int with the absolute value of the second int and the sign of the first int. Extensions are encoded as specified in {{ext-encoding}}. The extensions mandated to be supported by {{RFC7925}} and {{IEEE-802.1AR}} are given special treatment. An omitted 'extensions' field is encoded as an empty CBOR array.
 
 * signatureAlgorithm. The 'signatureAlgorithm' field including parameters is encoded as a CBOR int (see {{sigalg}}) or as an array with an unwrapped CBOR OID tag {{I-D.ietf-cbor-tags-oid}} optionally followed by the parameters encoded as a CBOR byte string.
-      
+
 * signatureValue. In general, the 'signatureValue' BIT STRING value field is encoded as the CBOR byte string issuerSignatureValue. This specification assumes the BIT STRING has zero unused bits and the unused bits byte is omitted. For natively signed CBOR certificates the signatureValue is calculated over the CBOR sequence TBSCertificate. For ECDSA, the encoding of issuerSignatureValue is further optimized as described in {{alg-encoding}}
 
 The following Concise Data Definition Language (CDDL) defines CBORCertificate and TBSCertificate, which are encoded as CBOR Sequences {{RFC8742}}. The member names therefore only have documentary value.
@@ -203,7 +203,7 @@ Name = [ * RelativeDistinguishedName ] / text / bytes
 RelativeDistinguishedName = Attribute / [ 2* Attribute ]
 
 Attribute = ( attributeType: int, attributeValue: text ) //
-            ( attributeType: ~oid, attributeValue: bytes ) 
+            ( attributeType: ~oid, attributeValue: bytes )
 
 Time = ~time / null
 
@@ -238,7 +238,7 @@ The 'extnValue' OCTET STREAM value field is encoded as the CBOR byte string 'ext
 
 * keyUsage. The 'KeyUsage' BIT STRING is interpreted as an unsigned integer n in network byte order and encoded as a CBOR int.
 
-* subjectAltName. extensionValue is encoded as an array of (int, any) pairs where each pair encodes a general name (see {{GN}}). If subjectAltName contains exactly one dNSName, the array and the int are omitted and extensionValue is the dNSName encoded as a CBOR text string. In addition to the general names defined in {{RFC5280}}, the hardwareModuleName type of otherName has been given its own int due to its mandatory use in IEEE 802.1AR. When 'otherName + hardwareModuleName' is used, then \[ oid, bytes \] is used to identify the pair ( hwType, hwSerialEntries ) directly as specified in {{RFC4108}}. 
+* subjectAltName. extensionValue is encoded as an array of (int, any) pairs where each pair encodes a general name (see {{GN}}). If subjectAltName contains exactly one dNSName, the array and the int are omitted and extensionValue is the dNSName encoded as a CBOR text string. In addition to the general names defined in {{RFC5280}}, the hardwareModuleName type of otherName has been given its own int due to its mandatory use in IEEE 802.1AR. When 'otherName + hardwareModuleName' is used, then \[ oid, bytes \] is used to identify the pair ( hwType, hwSerialEntries ) directly as specified in {{RFC4108}}.
 
 ~~~~~~~~~~~
    GeneralNames = [ + GeneralName ] / text
@@ -247,7 +247,7 @@ The 'extnValue' OCTET STREAM value field is encoded as the CBOR byte string 'ext
 
 * basicConstraints. If 'cA' = false then extensionValue = -2, if 'cA' = true and 'pathLenConstraint' is not present then extensionValue = -1, and if 'cA' = true and 'pathLenConstraint' is present then extensionValue = pathLenConstraint.
 
-* extKeyUsage. extensionValue is encoded as an array of CBOR ints (see {{EKU}}) or unwrapped CBOR OID tags {{I-D.ietf-cbor-tags-oid}} where each int or OID tag encodes a key usage purpose. If the array contains a single int, the array is omitted.  
+* extKeyUsage. extensionValue is encoded as an array of CBOR ints (see {{EKU}}) or unwrapped CBOR OID tags {{I-D.ietf-cbor-tags-oid}} where each int or OID tag encodes a key usage purpose. If the array contains a single int, the array is omitted.
 
 ~~~~~~~~~~~
    ExtValueEKU = [ + int / ~oid ] / int
@@ -275,7 +275,7 @@ The examples below use values from {{extype}}, {{EKU}}, and {{GN}}:
 
 * A critical basicConstraints ('cA' = true) without pathLenConstraint is encoded as the two CBOR ints -1, -1.
 
-* A non-critical keyUsage with digitalSignature and keyAgreement asserted is encoded as the two CBOR ints 2, 17 (2^0 + 2^4 = 17). 
+* A non-critical keyUsage with digitalSignature and keyAgreement asserted is encoded as the two CBOR ints 2, 17 (2^0 + 2^4 = 17).
 
 * A non-critical extKeyUsage containing id-kp-codeSigning and id-kp-OCSPSigning is encoded as the CBOR int 3 followed by the CBOR array \[ 3, 6 \].
 
@@ -335,9 +335,9 @@ The mechanism in this draft does not reveal any additional information compared 
 
 # IANA Considerations {#iana}
 
-This document creates several new registries under the new heading "CBOR Certificate". For all items, the 'Reference' field points to this document. 
+This document creates several new registries under the new heading "CBOR Certificate". For all items, the 'Reference' field points to this document.
 
-The expert reviewers for the registries defined in this document are expected to ensure that the usage solves a valid use case that could not be solved better in a different way, that it is not going to duplicate one that is already registered, and that the registered point is likely to be used in deployments. They are furthermore expected to check the clarity of purpose and use of the requested code points. Experts should take into account the expected usage of entries when approving point assignment, and the length of the encoded value should be weighed against the number of code points left that encode to that size and how constrained the systems it will be used on are. Values in the interval \[-24, 23\] have a 1 byte encodings, other values in the interval \[-256, 255\] have a 2 byte encodings, and the remaning values in the interval \[-65536, 65535\] have 3 byte encodings. 
+The expert reviewers for the registries defined in this document are expected to ensure that the usage solves a valid use case that could not be solved better in a different way, that it is not going to duplicate one that is already registered, and that the registered point is likely to be used in deployments. They are furthermore expected to check the clarity of purpose and use of the requested code points. Experts should take into account the expected usage of entries when approving point assignment, and the length of the encoded value should be weighed against the number of code points left that encode to that size and how constrained the systems it will be used on are. Values in the interval \[-24, 23\] have a 1 byte encodings, other values in the interval \[-256, 255\] have a 2 byte encodings, and the remaning values in the interval \[-65536, 65535\] have 3 byte encodings.
 
 ## CBOR Certificate Types Registry {#type}
 
@@ -682,31 +682,31 @@ IANA has created a new registry titled "CBOR Certificate Signature Algorithms" u
 |     0 | Name:        ECDSA with SHA-256                           |
 |       | OID:         1.2.840.10045.4.3.2                          |
 |       | Parameters:  Absent                                       |
-|       | DER:         30 0A 06 08 2A 86 48 CE 3D 04 03 02          | 
+|       | DER:         30 0A 06 08 2A 86 48 CE 3D 04 03 02          |
 |       | Comments:    Compressed signature value                   |
 +-------+-----------------------------------------------------------+
 |     1 | Name:        ECDSA with SHA-384                           |
 |       | OID:         1.2.840.10045.4.3.3                          |
 |       | Parameters:  Absent                                       |
-|       | DER:         30 0A 06 08 2A 86 48 CE 3D 04 03 03          | 
+|       | DER:         30 0A 06 08 2A 86 48 CE 3D 04 03 03          |
 |       | Comments:    Compressed signature value                   |
 +-------+-----------------------------------------------------------+
 |     2 | Name:        ECDSA with SHA-512                           |
 |       | OID:         1.2.840.10045.4.3.4                          |
 |       | Parameters:  Absent                                       |
-|       | DER:         30 0A 06 08 2A 86 48 CE 3D 04 03 04          | 
+|       | DER:         30 0A 06 08 2A 86 48 CE 3D 04 03 04          |
 |       | Comments:    Compressed signature value                   |
 +-------+-----------------------------------------------------------+
 |     3 | Name:        ECDSA with SHAKE128                          |
 |       | OID:         1.3.6.1.5.5.7.6.32                           |
 |       | Parameters:  Absent                                       |
-|       | DER:         30 0A 06 08 2B 06 01 05 05 07 06 20          | 
+|       | DER:         30 0A 06 08 2B 06 01 05 05 07 06 20          |
 |       | Comments:    Compressed signature value                   |
 +-------+-----------------------------------------------------------+
 |     4 | Name:        ECDSA with SHAKE256                          |
 |       | OID:         1.3.6.1.5.5.7.6.33                           |
 |       | Parameters:  Absent                                       |
-|       | DER:         30 0A 06 08 2B 06 01 05 05 07 06 21          | 
+|       | DER:         30 0A 06 08 2B 06 01 05 05 07 06 21          |
 |       | Comments:    Compressed signature value                   |
 +-------+-----------------------------------------------------------+
 |    12 | Name:        Ed25519                                      |
@@ -724,19 +724,19 @@ IANA has created a new registry titled "CBOR Certificate Signature Algorithms" u
 |    23 | Name:        RSASSA-PKCS1-v1_5 with SHA-256               |
 |       | OID:         1.2.840.113549.1.1.11                        |
 |       | Parameters:  NULL                                         |
-|       | DER:         30 0B 06 09 2A 86 48 86 F7 0D 01 01 0B 05 00 | 
+|       | DER:         30 0B 06 09 2A 86 48 86 F7 0D 01 01 0B 05 00 |
 |       | Comments:                                                 |
 +-------+-----------------------------------------------------------+
 |    24 | Name:        RSASSA-PKCS1-v1_5 with SHA-384               |
 |       | OID:         1.2.840.113549.1.1.12                        |
 |       | Parameters:  NULL                                         |
-|       | DER:         30 0B 06 09 2A 86 48 86 F7 0D 01 01 0C 05 00 | 
+|       | DER:         30 0B 06 09 2A 86 48 86 F7 0D 01 01 0C 05 00 |
 |       | Comments:                                                 |
 +-------+-----------------------------------------------------------+
 |    25 | Name:        RSASSA-PKCS1-v1_5 with SHA-512               |
 |       | OID:         1.2.840.113549.1.1.13                        |
 |       | Parameters:  NULL                                         |
-|       | DER:         30 0B 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00 | 
+|       | DER:         30 0B 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00 |
 |       | Comments:                                                 |
 +-------+-----------------------------------------------------------+
 |    26 | Name:        RSASSA-PSS with SHA-256                      |
@@ -778,7 +778,7 @@ IANA has created a new registry titled "CBOR Certificate Signature Algorithms" u
 |    30 | Name:        RSASSA-PSS with SHAKE256                     |
 |       | OID:         1.3.6.1.5.5.7.6.31                           |
 |       | Parameters:  Absent                                       |
-|       | DER:         30 0A 06 08 2B 06 01 05 05 07 06 1F          | 
+|       | DER:         30 0A 06 08 2B 06 01 05 05 07 06 1F          |
 |       | Comments:                                                 |
 +-------+-----------------------------------------------------------+
 |    42 | Name:        HSS / LMS                                    |
@@ -913,7 +913,7 @@ Note that certificates can also be identified with a 'kid' header parameter by s
 | c5u       |  TBD4 | uri            | URI pointing to a COSE_C5    |
 +-----------+-------+----------------+------------------------------+
 ~~~~~~~~~~~
- 
+
 ## TLS Certificate Types Registry {#tls}
 
 This document registers the following entry in the "TLS Certificate Types" registry under the "Transport Layer Security (TLS) Extensions" heading. The new certificate type can be used with addtional TLS certificate compression {{RFC8879}}.
@@ -924,7 +924,7 @@ EDITOR'S NOTE: The TLS registrations should be discussed and approved by the TLS
 +-------+------------------+-------------+--------------------------+
 | Value | Name             | Recommended | Comment                  |
 +=======+==================+=============+==========================+
-|  TBD5 | CBOR Certificate |           Y |                          |         
+|  TBD5 | CBOR Certificate |           Y |                          |
 +-------+------------------+-------------+--------------------------+
 ~~~~~~~~~~~
 
@@ -973,14 +973,14 @@ Certificate:
                 ASN1 OID: prime256v1
                 NIST CURVE: P-256
         X509v3 extensions:
-            X509v3 Key Usage: 
+            X509v3 Key Usage:
                 Digital Signature
     Signature Algorithm: ecdsa-with-SHA256
          30:44:02:20:44:5d:79:8c:90:e7:f5:00:dc:74:7a:65:4c:ec:
          6c:fa:6f:03:72:76:e1:4e:52:ed:07:fc:16:29:4c:84:66:0d:
          02:20:5a:33:98:5d:fb:d4:bf:dd:6d:4a:cf:38:04:c3:d4:6e:
          bf:3b:7f:a6:26:40:67:4f:c0:35:4f:a0:56:db:ae:a6
-         
+
 ~~~~~~~~~~~
 
 The DER encoding of the above certificate is 314 bytes.
@@ -1085,7 +1085,7 @@ The size of the CBOR encoding (CBOR sequence) is 138 bytes.
 00
 58 40 B2 7A 0B 78 14 55 F7 1B 68 29 0F 6C 2E C9 A8 97 F1 8F DE 9B 6C
 59 57 59 53 BC 67 26 8A B0 E4 DD E9 9D 27 3E 04 E4 71 53 83 AB 22 57
-C6 AA A3 52 84 E5 ED 18 BD B9 12 47 E9 F2 C4 33 13 64 80 B9 
+C6 AA A3 52 84 E5 ED 18 BD B9 12 47 E9 F2 C4 33 13 64 80 B9
 ~~~~~~~~~~~
 
 ### Example: Additonal Keys for the Example Certificates
@@ -1337,8 +1337,8 @@ h'B1E137E8EB82D689FADBF5C24B77F02C4ADE726E3E1360D1A8661EC4AD3D3260E5F099B5F47A7A
        2012,
        1,
        h'A5E0906E63E91D4FDDEFFF0352B91E50896007564B448A3828F596DC6B28726DFC91EAED02168866054EE18A2E5346C4CC51FEB3FA10A91D2EDBF99125F86CE6'
-     ] 
-],  
+     ]
+],
 23,
 h'14043FA0BED2EE3FA86E3A1F788EA04C35530F11061FFF60A16D0B83E9D92ADBB33F9DB3D7E0594C19A8E419A50CA770727763D5FE64510AD27AD650A58A9238ECCB2F0F5AC064584D5C06B9736368278B8934DC79C71D3AFD345F831441584980682980398A867269CC7937CEE397F7DCF39588ED81032900D2A2C7BAABD63A8ECA090BD9FB39264BFF03D88E2D3F6B21CA8A7DD85FFB94BA83DE9CFC158D61FA672DB0C7DB3D250A414A85D37F4946373CF4B175D052F3DDC766F14BFDAA00EDBFE47EED01EC7BE4F646FC31FD72FE03D2F265AF4D7EE2819B7AFD303CF552F40534A08A3E194158C8A8E05171840915AEECA57775FA18F7D577D531CCC72D'
 ~~~~~~~~~~~
